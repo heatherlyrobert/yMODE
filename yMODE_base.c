@@ -12,6 +12,7 @@ int     g_mode_depth;                /* depth of current mode stack    */
 char    g_mode_curr;                 /* current mode in stack          */
 char    g_message       [LEN_RECD];
 char    g_last       = '-';
+char    g_text          [LEN_TERSE] = "··";
 
 char   *g_allow  [MAX_MODES] = { NULL };
 char    g_actual [MAX_MODES] [LEN_DESC];
@@ -223,7 +224,7 @@ ymode__unit             (char *a_question, int n)
       snprintf (unit_answer, LEN_FULL, "MODE status (%2d) : %c  å%sæ  å%sæ", n, g_modes [n].abbr, g_modes [n].expect, g_actual [n]);
    }
    else if (strcmp (a_question, "text"         )  == 0) {
-      /*> snprintf (unit_answer, LEN_FULL, "MODE text        : %s", myVIKEYS.mode_text);   <*/
+      snprintf (unit_answer, LEN_FULL, "MODE text        : %s", g_text);
    }
    /*---(complete)-----------------------*/
    return unit_answer;

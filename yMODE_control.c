@@ -53,20 +53,21 @@ ymode_by_abbr           (char a_abbr)
 /*====================------------------------------------====================*/
 static void  o___MODE_STACK______o () { return; }
 
-char
-yvikeys_mode__update    (void)
+char 
+ymode_update            (void)
 {
    if (strchr (g_majors, g_mode_curr) != NULL) {
-      /*> sprintf (myVIKEYS.mode_text, "[%c ]" , g_mode_curr);                        <*/
+      sprintf (g_text, "[%c ]" , g_mode_curr);
    } else {
-      /*> sprintf (myVIKEYS.mode_text, "[%c%c]", g_mode_stack [g_mode_depth - 2], g_mode_curr);   <*/
+      sprintf (g_text, "[%c%c]", g_mode_stack [g_mode_depth - 2], g_mode_curr);
    }
-   /*> yvikeys_view_modes      (myVIKEYS.mode_text);                                  <*/
    return 0;
 }
 
+char* yMODE_text              (void) { return g_text; }
+
 char         /*--> add a mode to the stack ---------------[--------[--------]-*/
-yMODE_enter         (char a_mode)
+yMODE_enter             (char a_mode)
 {
    /*---(locals)-----------+-----------+-*/
    char        rce         = -10;
@@ -104,7 +105,7 @@ yMODE_enter         (char a_mode)
          return rce;
       }
       DEBUG_PROG   yLOG_info    ("allow"     , g_allow [x_index]);
-      --rce;  if (strchr (g_allow [x_index], a_mode) == NULL) {
+      --rce;  if (g_allow [x_index] == NULL || strchr (g_allow [x_index], a_mode) == NULL) {
          DEBUG_PROG   yLOG_exitr   (__FUNCTION__, rce);
          return rce;
       }
@@ -121,7 +122,7 @@ yMODE_enter         (char a_mode)
    /*---(set global mode)----------------*/
    g_mode_curr = a_mode;
    DEBUG_PROG   yLOG_char    ("mode_curr" , g_mode_curr);
-   yvikeys_mode__update ();
+   ymode_update ();
    /*---(complete)-----------------------*/
    DEBUG_PROG   yLOG_exit    (__FUNCTION__);
    return 0;
@@ -148,7 +149,7 @@ yMODE_exit              (void)
    /*---(set global mode)----------------*/
    g_mode_curr = x_mode;
    DEBUG_PROG   yLOG_char    ("mode_curr" , g_mode_curr);
-   yvikeys_mode__update ();
+   ymode_update ();
    /*---(complete)-----------------------*/
    DEBUG_PROG   yLOG_exit    (__FUNCTION__);
    return 0;
@@ -156,12 +157,6 @@ yMODE_exit              (void)
 
 char
 yMODE_curr              (void)
-{
-   return g_mode_curr;
-}
-
-char
-yVIKEYS_mode       (void)
 {
    return g_mode_curr;
 }

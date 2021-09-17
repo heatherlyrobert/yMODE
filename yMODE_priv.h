@@ -36,8 +36,8 @@
 
 #define     P_VERMAJOR  "2.--, clean, improve, and expand"
 #define     P_VERMINOR  "2.0-, separated into independent library"
-#define     P_VERNUM    "2.0b"
-#define     P_VERTXT    "flushed out allowed and unit tested it"
+#define     P_VERNUM    "2.0c"
+#define     P_VERTXT    "flushed out control and unit tested it"
 
 #define     P_PRIORITY  "direct, simple, brief, vigorous, and lucid (h.w. fowler)"
 #define     P_PRINCIPAL "[grow a set] and build your wings on the way down (r. bradbury)"
@@ -103,6 +103,7 @@ extern int     g_mode_depth;                /* depth of current mode stack    */
 extern char    g_mode_curr;                 /* current mode in stack          */
 extern char    g_message       [LEN_RECD];
 extern char    g_last;
+extern char    g_text          [LEN_TERSE];
 
 
 /*===[[ yMACRO_allow.c ]]=====================================================*/
@@ -128,6 +129,8 @@ char*       ymode__unit             (char *a_question, int n);
 
 /*===[[ yMACRO_control.c ]]===================================================*/
 /*345678901-12345678901-12345678901-12345678901-12345678901-12345678901-123456*/
+char        ymode_update            (void);
+char*       yMODE_text              (void);
 char        yMODE_enter             (char a_mode);
 char        yMODE_exit              (void);
 char        yMODE_curr              (void);

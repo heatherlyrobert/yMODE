@@ -73,6 +73,12 @@ char        yMODE_set_allow         (char a_abbr, char *a_allow);
 char        yMODE_get_message       (char a_abbr, char *a_mesg);
 char        yMODE_set_message       (char a_abbr, char *a_mesg);
 
+char*       yMODE_text              (void);
+char        yMODE_enter             (char a_mode);
+char        yMODE_exit              (void);
+char        yMODE_curr              (void);
+char        yMODE_prev              (void);
+char        yMODE_not               (char a_mode);
 
 #endif
 /*============================----end-of-source---============================*/
