@@ -36,8 +36,8 @@
 
 #define     P_VERMAJOR  "2.--, clean, improve, and expand"
 #define     P_VERMINOR  "2.0-, separated into independent library"
-#define     P_VERNUM    "2.0a"
-#define     P_VERTXT    "bare-bones, initial break-out of yVIKEYS code"
+#define     P_VERNUM    "2.0b"
+#define     P_VERTXT    "flushed out allowed and unit tested it"
 
 #define     P_PRIORITY  "direct, simple, brief, vigorous, and lucid (h.w. fowler)"
 #define     P_PRINCIPAL "[grow a set] and build your wings on the way down (r. bradbury)"
@@ -58,7 +58,7 @@
 
 
 /*===[[ STRUCTURE ]]==========================================================*/
-#define     MAX_MODES   100
+#define     MAX_MODES   40
 typedef  struct  cMODE_INFO  tMODE_INFO;
 struct cMODE_INFO {
    /*---(desc)--------------*/
@@ -68,20 +68,77 @@ struct cMODE_INFO {
    cchar       three       [LEN_SHORT];/* very short name                     */
    cchar       terse       [LEN_TERSE];/* short name                          */
    cchar       cat;                    /* category for reporting              */
-   /*---(movement)----------*/
-   char        allow       [LEN_DESC]; /* allowed mode transitions            */
    /*---(status)------------*/
    cchar       expect      [LEN_DESC]; /* expected prep and setup             */
-   char        actual      [LEN_DESC]; /* actual prep and setup               */
    /*---(message)-----------*/
    cchar       desc        [LEN_DESC]; /* description of mode                 */
-   char        mesg        [LEN_HUND];;/* informative message for display     */
-   /*---(usage)-------------*/
-   int         count;                  /* number of times used                */
+   cchar       mesg        [LEN_HUND];;/* informative message for display     */
    /*---(done)--------------*/
 };
-extern tMODE_INFO  g_modes [MAX_MODES];
+extern const tMODE_INFO  g_modes   [MAX_MODES];
+extern int         g_nmode;
+extern char        g_majors  [MAX_MODES];
 
+extern char       *g_allow   [MAX_MODES];
+extern char        g_actual  [MAX_MODES] [LEN_DESC];
+extern char       *g_mesg    [MAX_MODES];
+
+/*    MODE_    major mode, used for most working time
+ *    SMOD_    sub-mode, supports major mode(s), used for short-period
+ *    UMOD_    micro-mode, very simple supporting capability, used very quickly
+ *    XMOD_    external-mode, custom to applicaton supported
+ *    FMOD_    fundamental, not a usable mode, but a building block
+ */
+#define       MODE_FUND     'F'
+#define       MODE_MAJOR    'M'
+#define       MODE_SUB      's'
+#define       MODE_MICRO    'u'
+#define       MODE_EXTERN   'x'
+#define       MODE_NOT      '-'
+
+
+#define     MAX_STACK   50
+extern char    g_mode_stack    [MAX_STACK]; /* vi-like mode stack             */
+extern int     g_mode_depth;                /* depth of current mode stack    */
+extern char    g_mode_curr;                 /* current mode in stack          */
+extern char    g_message       [LEN_RECD];
+extern char    g_last;
+
+
+/*===[[ yMACRO_allow.c ]]=====================================================*/
+/*345678901-12345678901-12345678901-12345678901-12345678901-12345678901-123456*/
+char        ymode_allow_purge       (void);
+char        ymode_allow_load        (void);
+char        ymode_allow_single      (char a_mode);
+char        yMODE_get_allow         (char a_abbr, char *a_allow);
+char        yMODE_set_allow         (char a_abbr, char *a_allow);
+char        yMODE_get_message       (char a_abbr, char *a_mesg);
+char        yMODE_set_message       (char a_abbr, char *a_mesg);
+
+
+/*===[[ yMACRO_base.c ]]======================================================*/
+/*345678901-12345678901-12345678901-12345678901-12345678901-12345678901-123456*/
+char*       yMODE_version           (void);
+char        yMODE_init              (char a_mode);
+char        ymode__unit_quiet       (void);
+char        ymode__unit_loud        (void);
+char        ymode__unit_end         (void);
+char*       ymode__unit             (char *a_question, int n);
+
+
+/*===[[ yMACRO_control.c ]]===================================================*/
+/*345678901-12345678901-12345678901-12345678901-12345678901-12345678901-123456*/
+char        yMODE_enter             (char a_mode);
+char        yMODE_exit              (void);
+char        yMODE_curr              (void);
+char        yMODE_prev              (void);
+char        yMODE_not               (char a_mode);
+
+
+/*===[[ yMACRO_control.c ]]===================================================*/
+/*345678901-12345678901-12345678901-12345678901-12345678901-12345678901-123456*/
+char        yMODE_status            (char *a_list);
+char*       yMODE_message           (void);
 
 #endif
 

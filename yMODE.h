@@ -56,5 +56,23 @@
 
 
 
+
+/*345678901-12345678901-12345678901-12345678901-12345678901-12345678901-123456*/
+char*       yMODE_version           (void);
+char        yMODE_init              (char a_mode);
+char        yMODE_enter             (char a_mode);
+char        yMODE_exit              (void);
+char        yMODE_curr              (void);
+char        yMODE_prev              (void);
+char        yMODE_not               (char a_mode);
+char        yMODE_status            (char *a_list);
+char*       yMODE_message           (void);
+
+char        yMODE_get_allow         (char a_abbr, char *a_allow);
+char        yMODE_set_allow         (char a_abbr, char *a_allow);
+char        yMODE_get_message       (char a_abbr, char *a_mesg);
+char        yMODE_set_message       (char a_abbr, char *a_mesg);
+
+
 #endif
 /*============================----end-of-source---============================*/
