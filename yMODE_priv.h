@@ -36,8 +36,8 @@
 
 #define     P_VERMAJOR  "2.--, clean, improve, and expand"
 #define     P_VERMINOR  "2.0-, separated into independent library"
-#define     P_VERNUM    "2.0c"
-#define     P_VERTXT    "flushed out control and unit tested it"
+$define     P_VERNUM    "2.0d"
+#define     P_VERTXT    "status updated and init/init_set are unit tested"
 
 #define     P_PRIORITY  "direct, simple, brief, vigorous, and lucid (h.w. fowler)"
 #define     P_PRINCIPAL "[grow a set] and build your wings on the way down (r. bradbury)"
@@ -109,6 +109,7 @@ extern char    g_text          [LEN_TERSE];
 /*===[[ yMACRO_allow.c ]]=====================================================*/
 /*345678901-12345678901-12345678901-12345678901-12345678901-12345678901-123456*/
 char        ymode_allow_purge       (void);
+char        ymode_mesg_purge        (void);
 char        ymode_allow_load        (void);
 char        ymode_allow_single      (char a_mode);
 char        yMODE_get_allow         (char a_abbr, char *a_allow);
@@ -121,6 +122,7 @@ char        yMODE_set_message       (char a_abbr, char *a_mesg);
 /*345678901-12345678901-12345678901-12345678901-12345678901-12345678901-123456*/
 char*       yMODE_version           (void);
 char        yMODE_init              (char a_mode);
+char        yMODE_wrap              (void);
 char        ymode__unit_quiet       (void);
 char        ymode__unit_loud        (void);
 char        ymode__unit_end         (void);
@@ -129,8 +131,6 @@ char*       ymode__unit             (char *a_question, int n);
 
 /*===[[ yMACRO_control.c ]]===================================================*/
 /*345678901-12345678901-12345678901-12345678901-12345678901-12345678901-123456*/
-char        ymode_update            (void);
-char*       yMODE_text              (void);
 char        yMODE_enter             (char a_mode);
 char        yMODE_exit              (void);
 char        yMODE_curr              (void);
@@ -138,10 +138,35 @@ char        yMODE_prev              (void);
 char        yMODE_not               (char a_mode);
 
 
-/*===[[ yMACRO_control.c ]]===================================================*/
+/*===[[ yMACRO_rptg.c ]]======================================================*/
 /*345678901-12345678901-12345678901-12345678901-12345678901-12345678901-123456*/
-char        yMODE_status            (char *a_list);
+char        ymode_update            (void);
+char*       yMODE_text              (void);
 char*       yMODE_message           (void);
+char        yMODE_status            (char *a_list);
+
+
+/*===[[ yMACRO_status.c ]]====================================================*/
+/*345678901-12345678901-12345678901-12345678901-12345678901-12345678901-123456*/
+char        ymode__check            (char a_abbr, char a_target);
+char        yMODE_check_prep        (char a_abbr);
+char        yMODE_check_needs       (char a_abbr);
+char        yMODE_operational       (char a_abbr);
+char        ymode__filling          (char a_abbr, char a_target);
+char        ymode__prep_fill        (char a_abbr);
+char        ymode__need_fill        (char a_abbr);
+char        ymode__deps_fill        (char a_abbr);
+char        ymode__conf_verify      (void);
+char        ymode__updating         (char a_target);
+char        ymode__prep_checkall    (void);
+char        ymode__need_checkall    (void);
+char        ymode__deps_checkall    (void);
+char        yMODE_init_set          (char a_abbr);
+char        yMODE_conf_set          (char a_abbr, char a_step);
+char        ymode_status_purge      (void);
+char        ymode_status_init       (void);
+/*> char        yMODE_statuses          (FILE *a_file);                               <*/
+
 
 #endif
 

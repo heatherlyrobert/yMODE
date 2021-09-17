@@ -3,7 +3,6 @@
 #include    "yMODE.h"
 #include    "yMODE_priv.h"
 
-char   s_status [MAX_MODES][LEN_DESC];
 
 
 #define       S_PRE        0
@@ -30,7 +29,7 @@ char   s_status [MAX_MODES][LEN_DESC];
 static void  o___STATUS_CHECK____o () { return; }
 
 char
-STATUS__check           (char a_abbr, char a_target)
+ymode__check            (char a_abbr, char a_target)
 {
    /*---(locals)-----------+-----+-----+-*/
    char        x_index     =    0;
@@ -66,32 +65,32 @@ STATUS__check           (char a_abbr, char a_target)
 }
 
 char
-STATUS_check_prep        (char a_abbr)
+yMODE_check_prep        (char a_abbr)
 {
    char        rc          =    0;
    DEBUG_MODE   yLOG_senter  (__FUNCTION__);
-   rc = STATUS__check  (a_abbr, 'p');
+   rc = ymode__check  (a_abbr, 'p');
    DEBUG_MODE   yLOG_sexit   (__FUNCTION__);
    return rc;
 }
 
 char
-STATUS_check_needs        (char a_abbr)
+yMODE_check_needs       (char a_abbr)
 {
    char        rc          =    0;
    DEBUG_MODE   yLOG_senter  (__FUNCTION__);
-   if (rc == 0)  rc = STATUS__check  (a_abbr, 'i');
-   if (rc >  0)  rc = STATUS__check  (a_abbr, 'n');
+   if (rc == 0)  rc = ymode__check  (a_abbr, 'i');
+   if (rc >  0)  rc = ymode__check  (a_abbr, 'n');
    DEBUG_MODE   yLOG_sexit   (__FUNCTION__);
    return rc;
 }
 
 char
-STATUS_operational         (char a_abbr)
+yMODE_operational       (char a_abbr)
 {
    char        rc          =    0;
    DEBUG_MODE   yLOG_senter  (__FUNCTION__);
-   rc = STATUS__check  (a_abbr, 'o');
+   rc = ymode__check  (a_abbr, 'o');
    DEBUG_MODE   yLOG_sexit   (__FUNCTION__);
    return rc;
 }
@@ -104,7 +103,7 @@ STATUS_operational         (char a_abbr)
 static void  o___STATUS_FILL_____o () { return; }
 
 char
-STATUS__filling         (char a_abbr, char a_target)
+ymode__filling          (char a_abbr, char a_target)
 {
    /*---(locals)-----------+-----+-----+-*/
    char        rc          =    0;
@@ -116,17 +115,17 @@ STATUS__filling         (char a_abbr, char a_target)
    /*---(prepare)------------------------*/
    switch (a_target) {
    case 'p' :
-      rc    = STATUS__check  (a_abbr, 'i');
+      rc    = ymode__check  (a_abbr, 'i');
       x_loc = S_PRE;
       x_len =  5;
       break;
    case 'n' :
-      rc    = STATUS__check  (a_abbr, 'i');
+      rc    = ymode__check  (a_abbr, 'i');
       x_loc = S_NEEDS;
       x_len =  5;
       break;
    case 'd' :
-      rc    = STATUS__check  (a_abbr, 'r');
+      rc    = ymode__check  (a_abbr, 'r');
       x_loc = S_DEPS;
       x_len = 10;
       break;
@@ -150,31 +149,31 @@ STATUS__filling         (char a_abbr, char a_target)
 }
 
 char
-STATUS__prep_fill       (char a_abbr)
+ymode__prep_fill        (char a_abbr)
 {
    char        rc          =    0;
    DEBUG_MODE   yLOG_senter  (__FUNCTION__);
-   rc = STATUS__filling  (a_abbr, 'p');
+   rc = ymode__filling  (a_abbr, 'p');
    DEBUG_MODE   yLOG_sexit   (__FUNCTION__);
    return rc;
 }
 
 char
-STATUS__need_fill       (char a_abbr)
+ymode__need_fill        (char a_abbr)
 {
    char        rc          =    0;
    DEBUG_MODE   yLOG_senter  (__FUNCTION__);
-   rc = STATUS__filling  (a_abbr, 'n');
+   rc = ymode__filling  (a_abbr, 'n');
    DEBUG_MODE   yLOG_sexit   (__FUNCTION__);
    return rc;
 }
 
 char
-STATUS__deps_fill       (char a_abbr)
+ymode__deps_fill        (char a_abbr)
 {
    char        rc          =    0;
    DEBUG_MODE   yLOG_senter  (__FUNCTION__);
-   rc = STATUS__filling  (a_abbr, 'd');
+   rc = ymode__filling  (a_abbr, 'd');
    DEBUG_MODE   yLOG_sexit   (__FUNCTION__);
    return rc;
 }
@@ -187,7 +186,7 @@ STATUS__deps_fill       (char a_abbr)
 static void  o___STATUS_READY____o () { return; }
 
 char
-STATUS__conf_verify     (void)
+ymode__conf_verify      (void)
 {
    /*---(locals)-----------+-----+-----+-*/
    int         n           =   -1;
@@ -218,7 +217,7 @@ STATUS__conf_verify     (void)
 static void  o___STATUS_UPDATE___o () { return; }
 
 char
-STATUS__updating        (char a_target)
+ymode__updating         (char a_target)
 {
    /*---(locals)-----------+-----+-----+-*/
    char        x_loc       =    0;
@@ -274,41 +273,41 @@ STATUS__updating        (char a_target)
 }
 
 char
-STATUS__prep_checkall   (void)
+ymode__prep_checkall    (void)
 {
    char        rc          =    0;
    DEBUG_MODE   yLOG_senter  (__FUNCTION__);
-   rc = STATUS__updating  ('p');
+   rc = ymode__updating  ('p');
    DEBUG_MODE   yLOG_sexit   (__FUNCTION__);
    return rc;
 }
 
 char
-STATUS__need_checkall   (void)
+ymode__need_checkall    (void)
 {
    char        rc          =    0;
    DEBUG_MODE   yLOG_senter  (__FUNCTION__);
-   rc = STATUS__updating  ('n');
+   rc = ymode__updating  ('n');
    DEBUG_MODE   yLOG_sexit   (__FUNCTION__);
    return rc;
 }
 
 char
-STATUS__deps_checkall   (void)
+ymode__deps_checkall    (void)
 {
    char        rc          =    0;
    DEBUG_MODE   yLOG_senter  (__FUNCTION__);
-   rc = STATUS__updating  ('d');
+   rc = ymode__updating  ('d');
    DEBUG_MODE   yLOG_sexit   (__FUNCTION__);
    return rc;
 }
 
 char
-STATUS__oper_checkall   (void)
+ymode__oper_checkall    (void)
 {
    char        rc          =    0;
    DEBUG_MODE   yLOG_senter  (__FUNCTION__);
-   rc = STATUS__updating  ('o');
+   rc = ymode__updating  ('o');
    DEBUG_MODE   yLOG_sexit   (__FUNCTION__);
    return rc;
 }
@@ -321,67 +320,67 @@ STATUS__oper_checkall   (void)
 static void  o___STATUS_SETTING__o () { return; }
 
 char
-STATUS_init_set         (char a_abbr)
+yMODE_init_set          (char a_abbr)
 {
    /*---(locals)-----------+-----+-----+-*/
    char        rce         =  -10;
    char        rc          =    0;
    int         n           =   -1;
    /*---(header)-------------------------*/
-   DEBUG_PROG   yLOG_enter   (__FUNCTION__);
+   DEBUG_MODE   yLOG_enter   (__FUNCTION__);
    /*---(ready)--------------------------*/
-   rc = STATUS_check_prep (a_abbr);
+   rc = yMODE_check_prep (a_abbr);
    --rce;  if (rc == 0) {
-      DEBUG_PROG   yLOG_exitr   (__FUNCTION__, rce);
+      DEBUG_MODE   yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
    /*---(update this status)-------------*/
    n = g_last;
-   DEBUG_PROG   yLOG_note    ("mark as initialized");
+   DEBUG_MODE   yLOG_note    ("mark as initialized");
    g_actual [n] [S_INIT ] = 'i';
    /*---(mark others lines)--------------*/
-   STATUS__prep_fill      (a_abbr);
-   STATUS__prep_checkall  ();
-   STATUS__need_fill      (a_abbr);
-   STATUS__need_checkall  ();
-   STATUS__conf_verify    ();
-   STATUS__deps_fill      (a_abbr);
-   STATUS__deps_checkall  ();
-   STATUS__oper_checkall  ();
+   ymode__prep_fill       (a_abbr);
+   ymode__prep_checkall   ();
+   ymode__need_fill       (a_abbr);
+   ymode__need_checkall   ();
+   ymode__conf_verify     ();
+   ymode__deps_fill       (a_abbr);
+   ymode__deps_checkall   ();
+   ymode__oper_checkall   ();
    /*---(complete)-----------------------*/
-   DEBUG_PROG   yLOG_exit    (__FUNCTION__);
+   DEBUG_MODE   yLOG_exit    (__FUNCTION__);
    return 0;
 }
 
 char
-STATUS_conf_set         (char a_abbr, char a_step)
+yMODE_conf_set          (char a_abbr, char a_step)
 {
    /*---(locals)-----------+-----+-----+-*/
    char        rce         =  -10;
    char        rc          =    0;
    int         n           =   -1;
    /*---(header)-------------------------*/
-   DEBUG_PROG   yLOG_enter   (__FUNCTION__);
+   DEBUG_MODE   yLOG_enter   (__FUNCTION__);
    /*---(ready)--------------------------*/
-   rc = STATUS_check_needs (a_abbr);
+   rc = yMODE_check_needs (a_abbr);
    --rce;  if (rc == 0) {
-      DEBUG_PROG   yLOG_exitr   (__FUNCTION__, rce);
+      DEBUG_MODE   yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
    /*---(status)-------------------------*/
    n = g_last;
    /*---(ready)--------------------------*/
-   DEBUG_PROG   yLOG_char    ("a_step"    , a_step);
+   DEBUG_MODE   yLOG_char    ("a_step"    , a_step);
    g_actual [n] [S_CONF + a_step - '1'] = a_step;
    /*---(mark others lines)--------------*/
-   STATUS__prep_checkall  ();
-   STATUS__need_checkall  ();
-   STATUS__conf_verify    ();
-   STATUS__deps_fill      (a_abbr);
-   STATUS__deps_checkall  ();
-   STATUS__oper_checkall  ();
+   ymode__prep_checkall   ();
+   ymode__need_checkall   ();
+   ymode__conf_verify     ();
+   ymode__deps_fill       (a_abbr);
+   ymode__deps_checkall   ();
+   ymode__oper_checkall   ();
    /*---(complete)-----------------------*/
-   DEBUG_PROG   yLOG_exit    (__FUNCTION__);
+   DEBUG_MODE   yLOG_exit    (__FUNCTION__);
    return 0;
 }
 
@@ -393,29 +392,29 @@ STATUS_conf_set         (char a_abbr, char a_step)
 static void  o___STATUS_PROG_____o () { return; }
 
 char
-STATUS__purge           (void)
+ymode_status_purge      (void)
 {
    /*---(locals)-----------+-----+-----+-*/
    int         i           =    0;
    /*---(header)-------------------------*/
-   DEBUG_PROG   yLOG_senter  (__FUNCTION__);
+   DEBUG_MODE   yLOG_senter  (__FUNCTION__);
    /*---(count status)-------------------*/
    for (i = 0; i < g_nmode; ++i) {
-      DEBUG_PROG   yLOG_schar   (g_modes [i].abbr);
+      DEBUG_MODE   yLOG_schar   (g_modes [i].abbr);
       strlcpy (g_actual [i], "----- - - ----- - ----- - ---------- - -", LEN_DESC);
    }
    /*---(complete)-----------------------*/
-   DEBUG_PROG   yLOG_sexit   (__FUNCTION__);
+   DEBUG_MODE   yLOG_sexit   (__FUNCTION__);
    return 0;
 }
 
 char
-STATUS_init             (void)
+ymode_status_init       (void)
 {
    /*---(locals)-----------+-----+-----+-*/
    int         i           =    0;
    /*---(header)-------------------------*/
-   DEBUG_PROG   yLOG_enter   (__FUNCTION__);
+   DEBUG_MODE   yLOG_enter   (__FUNCTION__);
    /*---(count status)-------------------*/
    g_nmode = 0;
    for (i = 0; i < MAX_MODES; ++i) {
@@ -423,30 +422,18 @@ STATUS_init             (void)
       if (g_modes [i].abbr == '-')  break;
       ++g_nmode;
    }
-   DEBUG_PROG   yLOG_value   ("g_nmode" , g_nmode);
+   DEBUG_MODE   yLOG_value   ("g_nmode" , g_nmode);
    /*---(update)-------------------------*/
-   STATUS__purge ();
-   STATUS__prep_checkall ();
-   STATUS_init_set       (FMOD_STATUS);
+   ymode_status_purge   ();
+   ymode__prep_checkall ();
+   yMODE_init_set       (FMOD_STATUS);
    /*---(complete)-----------------------*/
-   DEBUG_PROG   yLOG_exit    (__FUNCTION__);
+   DEBUG_MODE   yLOG_exit    (__FUNCTION__);
    return 0;
 }
 
 char
-STATUS_wrap             (void)
-{
-   /*---(header)-------------------------*/
-   DEBUG_PROG   yLOG_enter   (__FUNCTION__);
-   /*---(purge)--------------------------*/
-   STATUS__purge ();
-   /*---(complete)-----------------------*/
-   DEBUG_PROG   yLOG_exit    (__FUNCTION__);
-   return 0;
-}
-
-char
-STATUS_dump             (FILE *a_file)
+yMODE_statuses          (FILE *a_file)
 {
    /*---(locals)-----------+-----+-----+-*/
    int         n           =    0;

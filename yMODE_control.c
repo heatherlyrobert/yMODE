@@ -53,19 +53,6 @@ ymode_by_abbr           (char a_abbr)
 /*====================------------------------------------====================*/
 static void  o___MODE_STACK______o () { return; }
 
-char 
-ymode_update            (void)
-{
-   if (strchr (g_majors, g_mode_curr) != NULL) {
-      sprintf (g_text, "[%c ]" , g_mode_curr);
-   } else {
-      sprintf (g_text, "[%c%c]", g_mode_stack [g_mode_depth - 2], g_mode_curr);
-   }
-   return 0;
-}
-
-char* yMODE_text              (void) { return g_text; }
-
 char         /*--> add a mode to the stack ---------------[--------[--------]-*/
 yMODE_enter             (char a_mode)
 {
@@ -75,56 +62,56 @@ yMODE_enter             (char a_mode)
    char        x_mode      = '-';
    int         x_index     = -1;
    /*---(header)-------------------------*/
-   DEBUG_PROG   yLOG_enter   (__FUNCTION__);
+   DEBUG_MODE   yLOG_enter   (__FUNCTION__);
    /*---(check for dup)------------------*/
    /*> if (g_mode_stack [g_mode_depth] == a_mode)  return 1;                            <*/
    /*---(validate mode)------------------*/
-   DEBUG_PROG   yLOG_char    ("a_mode"    , a_mode);
+   DEBUG_MODE   yLOG_char    ("a_mode"    , a_mode);
    for (i = 0; i < MAX_MODES; ++i) {
       if (g_modes [i].abbr == '-'    )  break;
       if (g_modes [i].abbr != a_mode )  continue;
       x_mode  = a_mode;
    }
-   DEBUG_PROG   yLOG_char    ("x_mode"    , x_mode);
+   DEBUG_MODE   yLOG_char    ("x_mode"    , x_mode);
    --rce;  if (x_mode  == '-') {
-      DEBUG_PROG   yLOG_exitr   (__FUNCTION__, rce);
+      DEBUG_MODE   yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
    /*---(check if allowed)---------------*/
    if (g_mode_depth > 0)  {
-      DEBUG_PROG   yLOG_char    ("curr"      , g_mode_curr);
+      DEBUG_MODE   yLOG_char    ("curr"      , g_mode_curr);
       for (i = 0; i < MAX_MODES; ++i) {
          if (g_modes [i].abbr == '-'    )      break;
          if (g_modes [i].abbr != g_mode_curr)  continue;
          x_index = i;
       }
-      DEBUG_PROG   yLOG_value   ("x_index"   , x_index);
-      DEBUG_PROG   yLOG_info    ("name"      , g_modes [x_index].terse);
+      DEBUG_MODE   yLOG_value   ("x_index"   , x_index);
+      DEBUG_MODE   yLOG_info    ("name"      , g_modes [x_index].terse);
       --rce;  if (x_index <   0 ) {
-         DEBUG_PROG   yLOG_exitr   (__FUNCTION__, rce);
+         DEBUG_MODE   yLOG_exitr   (__FUNCTION__, rce);
          return rce;
       }
-      DEBUG_PROG   yLOG_info    ("allow"     , g_allow [x_index]);
+      DEBUG_MODE   yLOG_info    ("allow"     , g_allow [x_index]);
       --rce;  if (g_allow [x_index] == NULL || strchr (g_allow [x_index], a_mode) == NULL) {
-         DEBUG_PROG   yLOG_exitr   (__FUNCTION__, rce);
+         DEBUG_MODE   yLOG_exitr   (__FUNCTION__, rce);
          return rce;
       }
    }
-   DEBUG_PROG   yLOG_value   ("x_index"   , x_index);
+   DEBUG_MODE   yLOG_value   ("x_index"   , x_index);
    /*---(add mode)-----------------------*/
    --rce;  if (g_mode_depth >= MAX_STACK) {
-      DEBUG_PROG   yLOG_exitr   (__FUNCTION__, rce);
+      DEBUG_MODE   yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
    g_mode_stack [g_mode_depth] = a_mode;
-   DEBUG_PROG   yLOG_complex ("stack"     , "%2d %s", g_mode_depth, g_mode_stack);
+   DEBUG_MODE   yLOG_complex ("stack"     , "%2d %s", g_mode_depth, g_mode_stack);
    ++g_mode_depth;
    /*---(set global mode)----------------*/
    g_mode_curr = a_mode;
-   DEBUG_PROG   yLOG_char    ("mode_curr" , g_mode_curr);
+   DEBUG_MODE   yLOG_char    ("mode_curr" , g_mode_curr);
    ymode_update ();
    /*---(complete)-----------------------*/
-   DEBUG_PROG   yLOG_exit    (__FUNCTION__);
+   DEBUG_MODE   yLOG_exit    (__FUNCTION__);
    return 0;
 }
 
@@ -135,23 +122,23 @@ yMODE_exit              (void)
    char        rce         = -10;
    char        x_mode      = '-';
    /*---(header)-------------------------*/
-   DEBUG_PROG   yLOG_enter   (__FUNCTION__);
+   DEBUG_MODE   yLOG_enter   (__FUNCTION__);
    /*---(check stack)--------------------*/
-   DEBUG_PROG   yLOG_value   ("depth"     , g_mode_depth);
+   DEBUG_MODE   yLOG_value   ("depth"     , g_mode_depth);
    --rce;  if (g_mode_depth <= 1) {
-      DEBUG_PROG   yLOG_exitr   (__FUNCTION__, rce);
+      DEBUG_MODE   yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
    --g_mode_depth;
    g_mode_stack [g_mode_depth] = x_mode;
-   DEBUG_PROG   yLOG_complex ("stack"     , "%2d %s", g_mode_depth, g_mode_stack);
+   DEBUG_MODE   yLOG_complex ("stack"     , "%2d %s", g_mode_depth, g_mode_stack);
    x_mode = g_mode_stack [g_mode_depth - 1];
    /*---(set global mode)----------------*/
    g_mode_curr = x_mode;
-   DEBUG_PROG   yLOG_char    ("mode_curr" , g_mode_curr);
+   DEBUG_MODE   yLOG_char    ("mode_curr" , g_mode_curr);
    ymode_update ();
    /*---(complete)-----------------------*/
-   DEBUG_PROG   yLOG_exit    (__FUNCTION__);
+   DEBUG_MODE   yLOG_exit    (__FUNCTION__);
    return 0;
 }
 

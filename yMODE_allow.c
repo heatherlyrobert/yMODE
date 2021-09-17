@@ -44,6 +44,19 @@ ymode_allow_purge       (void)
 }
 
 char
+ymode_mesg_purge        (void)
+{
+   int         i           =    0;
+   for (i = 0; i < MAX_MODES; ++i) {
+      if (g_mesg  [i] != g_modes [i].mesg) {
+         free (g_mesg [i]);
+         g_allow [i] = g_modes [i].mesg;
+      }
+   }
+   return 0;
+}
+
+char
 ymode_allow__loader     (char a_abbr)
 {
    int         n           =    0;

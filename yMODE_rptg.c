@@ -4,6 +4,19 @@
 #include    "yMODE_priv.h"
 
 
+char 
+ymode_update            (void)
+{
+   if (strchr (g_majors, g_mode_curr) != NULL) {
+      sprintf (g_text, "[%c ]" , g_mode_curr);
+   } else {
+      sprintf (g_text, "[%c%c]", g_mode_stack [g_mode_depth - 2], g_mode_curr);
+   }
+   return 0;
+}
+
+char* yMODE_text              (void) { return g_text; }
+
 
 char       /*----: list the current mode stack -------------------------------*/
 yMODE_status            (char *a_list)

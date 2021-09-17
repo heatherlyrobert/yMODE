@@ -80,5 +80,14 @@ char        yMODE_curr              (void);
 char        yMODE_prev              (void);
 char        yMODE_not               (char a_mode);
 
+
+char        yMODE_check_prep        (char a_abbr);
+char        yMODE_check_needs       (char a_abbr);
+char        yMODE_operational       (char a_abbr);
+char        yMODE_init_set          (char a_abbr);
+char        yMODE_conf_set          (char a_abbr, char a_step);
+/*> char        yMODE_statuses          (FILE *a_file);                               <*/
+
+
 #endif
 /*============================----end-of-source---============================*/

@@ -107,13 +107,13 @@ yMODE_init              (char a_mode)
    char        n           =    0;
    char        t           [5] = "";
    /*---(header)-------------------------*/
-   DEBUG_PROG   yLOG_enter   (__FUNCTION__);
+   DEBUG_MODE   yLOG_enter   (__FUNCTION__);
    /*---(prepare)------------------------*/
-   STATUS_init ();
+   ymode_status_init ();
    /*---(defense)------------------------*/
-   --rce;  if (!STATUS_check_prep  (FMOD_MODE)) {
-      DEBUG_PROG   yLOG_note    ("status is not ready for init");
-      DEBUG_PROG   yLOG_exitr   (__FUNCTION__, rce);
+   --rce;  if (!yMODE_check_prep  (FMOD_MODE)) {
+      DEBUG_MODE   yLOG_note    ("status is not ready for init");
+      DEBUG_MODE   yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
    /*---(prepare)------------------------*/
@@ -121,7 +121,6 @@ yMODE_init              (char a_mode)
    /*---(identify majors)----------------*/
    for (i = 0; i < MAX_MODES; ++i) {
       g_mesg [i] = g_modes [i].mesg;
-      strlcpy (g_actual [i], "----- - - ----- - ----- - ---------- - -", LEN_DESC);
       if (g_modes  [i].type != MODE_MAJOR)    continue;
       sprintf (t, "%c", g_modes  [i].abbr);
       strlcat (g_majors, t, MAX_MODES);
@@ -141,12 +140,21 @@ yMODE_init              (char a_mode)
     *> s_uniter    = NULL;                                                            <* 
     *> s_paletter  = NULL;                                                            <*/
    /*---(update status)------------------*/
-   STATUS_init_set   (FMOD_MODE);
+   yMODE_init_set   (FMOD_MODE);
    /*---(go to default mode)-------------*/
    if (a_mode == MODE_GOD)  yMODE_enter (MODE_GOD);
    else                     yMODE_enter (MODE_MAP);
    /*---(complete)-----------------------*/
-   DEBUG_PROG   yLOG_exit    (__FUNCTION__);
+   DEBUG_MODE   yLOG_exit    (__FUNCTION__);
+   return 0;
+}
+
+char
+yMODE_wrap              (void)
+{
+   ymode_status_purge ();
+   ymode_allow_purge  ();
+   ymode_mesg_purge   ();
    return 0;
 }
 
@@ -180,7 +188,7 @@ ymode__unit_loud        (void)
    yURG_name  ("kitchen"      , YURG_ON);
    yURG_name  ("mode"         , YURG_ON);
    yURG_name  ("ystr"         , YURG_ON);
-   DEBUG_YVIKEYS yLOG_info     ("yMODE"     , yMODE_version   ());
+   DEBUG_MODE  yLOG_info     ("yMODE"     , yMODE_version   ());
    yMODE_init (MODE_MAP);
    return 0;
 }
@@ -188,9 +196,9 @@ ymode__unit_loud        (void)
 char       /*----: stop logging ----------------------------------------------*/
 ymode__unit_end         (void)
 {
-   DEBUG_PROG   yLOG_enter   (__FUNCTION__);
+   DEBUG_MODE  yLOG_enter   (__FUNCTION__);
    /*> yVIKEYS_wrap ();                                                               <*/
-   DEBUG_PROG   yLOG_exit    (__FUNCTION__);
+   DEBUG_MODE  yLOG_exit    (__FUNCTION__);
    yLOGS_end    ();
    return 0;
 }
