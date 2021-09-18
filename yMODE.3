@@ -1,0 +1,171 @@
+.TH yMODE 3 2010-oct "linux" "interfacing applications with library"
+
+.SH NAME
+.B yMODE
+\- shared yVIKEYS (vi/vim) mode tracking and control
+
+.SH PATRON
+.B zeus-xenia
+(guest-friend) protector of travellers, guests, and hosts
+
+.SH IMAGERY
+greek god disguised as a normal traveller seeking shelter
+
+.SH SUMMARY
+.B yMODE
+is a simple, shared, well-tested library which allows applications to
+safely initialize, configure, and navigate the universal heatherly vi/vim-ish
+modal system
+.B (yVIKEYS).
+
+.SH DOCUMENTATION FILES (see also)
+.nf
+.B yMODE (3)··········interfacing applications with library
+.nf
+yMODE (7)          decision rationale, objectives, and overview
+
+.SH TABLE OF CONTENTS
+.nf  
+a) synopsis        standard command line overview
+b) overview        general overview of program
+c) overall         program level functions
+d) control         flow control functions
+e) status          status checking functions
+f) reporting       accessor and dump functions
+g) allow           mode change allowable functions
+
+.SH A) SYNOPSIS
+.nf
+.B #include  <yMODE.h>
+.sp
+===[[ overall (3) ]]===========================
+.BI "char* yMODE_version      (void);"
+.BI "char  yMODE_init         (char  " "a_mode" ");"
+.BI "char  yMODE_wrap         (void);"
+
+===[[ control (5) ]]===========================
+.BI "char  yMODE_enter        (char  " "a_mode" ");"
+.BI "char  yMODE_exit         (void);"
+.BI "char  yMODE_curr         (void);"
+.BI "char  yMODE_next         (void);"
+.BI "char  yMODE_not          (char  " "a_mode" ");"
+
+===[[ status (5) ]]============================
+.BI "char  yMODE_check_prep   (char  " "a_mode" ");"
+.BI "char  yMODE_init_set     (char  " "a_mode" ");"
+.BI "char  yMODE_check_needs  (char  " "a_mode" ");"
+.BI "char  yMODE_conf_set     (char  " "a_mode" ", char  " "a_step " ");"
+.BI "char  yMODE_operational  (char  " "a_mode" ");"
+
+===[[ reporting (5) ]]=========================
+.BI "char  yMODE_status       (char *" "a_list" ");"
+.BI "char  yMODE_update       (void);"
+.BI "char  yMODE_text         (void);"
+.BI "char  yMODE_message      (void);"
+.BI "char  yMODE_statuses     (FILE *" "a_file" ");"
+
+===[[ allow (4) ]]============================
+.BI "char  yMODE_get_allow    (char  " "a_mode" ", char *" "a_text " ");"
+.BI "char  yMODE_set_allow    (char  " "a_mode" ", char *" "a_text " ");"
+.BI "char  yMODE_get_message  (char  " "a_mode" ", char *" "a_text " ");"
+.BI "char  yMODE_set_message  (char  " "a_mode" ", char *" "a_text " ");"
+
+.sp
+.B link with -L/usr/local/lib, and either -lyMODE or -lyMODE_debug
+
+.SH B) OVERVIEW
+yMODE is a very specific library to allow yVIKEYS to properly initialize,
+configure, and navigate the yVIKEYS (vi/vim) standard modal system.  i have
+forced myself to use ONE STANDARD to keep my reuse and efficiency high.
+
+this library will primarily be hidden within yVIKEYS, but may sometimes
+need to be used elsewhere to support external modes.
+
+.SH C) OVERALL FUNCTIONS
+library setup, wrapup, and admin functions.
+
+.B yMODE_version ()
+returns current version identifier and description.
+
+.B yMODE_init (char a_mode)
+prepares library for use and sets base mode.
+
+.B yMODE_wrap ()
+frees memory and decommissions library.
+
+.SH D) CONTROL FUNCTIONS
+validates and tracks mode changes.
+
+.B yMODE_enter ()
+requests a change to a new mode.
+
+.B yMODE_enter ()
+requests to return to last mode.
+
+.B yMODE_curr ()
+returns the current mode abbreviation.
+
+.B yMODE_prev ()
+returns the previous mode abbreviation.
+
+.B yMODE_not ()
+true if current mode matches argument.
+
+.SH E) STATUS FUNCTIONS
+validates and tracks mode initialization.
+
+.B yMODE_check_prep ()
+true if mode initialization can be run.
+
+.B yMODE_init_set ()
+submits that mode initialization is done.
+
+.B yMODE_check_needs ()
+true if mode configuration can be run.
+
+.B yMODE_conf_set ()
+submits that mode configuration is done.
+
+.B yMODE_operational ()
+true if mode is ready for use.
+
+.SH F) REPORTING FUNCTIONS
+extracts data from the library.
+
+.B yMODE_status ()
+returns the yVIKEYS status line for modes.
+
+.B yMODE_update ()
+updates and returns mode text.
+
+.B yMODE_text ()
+returns the current mode text.
+
+.B yMODE_message ()
+returns the current mode message line.
+
+.B yMODE_statuses ()
+dumps current statuses to a file.
+
+.SH G) ALLOW FUNCTIONS
+updates allowable changes and messages.
+
+.B yMODE_get_allow ()
+returns the allowable changes list.
+
+.B yMODE_set_allow ()
+updates a mode allowable changes.
+
+.B yMODE_get_message ()
+returns the mode message text.
+
+.B yMODE_set_allow ()
+updates a mode message text.
+
+.SH AUTHOR
+jelloshrike at gmail dot com
+
+.SH COLOPHON
+this page is part of a documentation package meant to make use of the
+heatherly tools easier and faster.
+

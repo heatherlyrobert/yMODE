@@ -58,36 +58,34 @@
 
 
 /*345678901-12345678901-12345678901-12345678901-12345678901-12345678901-123456*/
+/*---(base)-----------------*/
 char*       yMODE_version           (void);
 char        yMODE_init              (char a_mode);
+char        yMODE_wrap              (void);
+/*---(control)--------------*/
 char        yMODE_enter             (char a_mode);
 char        yMODE_exit              (void);
 char        yMODE_curr              (void);
 char        yMODE_prev              (void);
 char        yMODE_not               (char a_mode);
-
+/*---(allow)----------------*/
 char        yMODE_get_allow         (char a_abbr, char *a_allow);
 char        yMODE_set_allow         (char a_abbr, char *a_allow);
 char        yMODE_get_message       (char a_abbr, char *a_mesg);
 char        yMODE_set_message       (char a_abbr, char *a_mesg);
-
-char        yMODE_enter             (char a_mode);
-char        yMODE_exit              (void);
-char        yMODE_curr              (void);
-char        yMODE_prev              (void);
-char        yMODE_not               (char a_mode);
-
+/*---(rptg)-----------------*/
 char        yMODE_status            (char *a_list);
 char*       yMODE_update            (void);
 char*       yMODE_text              (void);
 char*       yMODE_message           (void);
-
+char        yMODE_statuses          (void *a_file);
+/*---(status)---------------*/
 char        yMODE_check_prep        (char a_abbr);
 char        yMODE_check_needs       (char a_abbr);
 char        yMODE_operational       (char a_abbr);
 char        yMODE_init_set          (char a_abbr);
 char        yMODE_conf_set          (char a_abbr, char a_step);
-char        yMODE_statuses          (void *a_file);
+/*---(done)-----------------*/
 
 
 #endif

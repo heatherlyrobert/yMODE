@@ -14,7 +14,7 @@
 #define     P_SUBJECT   "mode tracking and control
 #define     P_PURPOSE   ""
 
-#define     P_NAMESAKE  ""
+#define     P_NAMESAKE  "zeus-xenia (guest-friend)"
 #define     P_HERITAGE  ""
 #define     P_IMAGERY   ""
 #define     P_REASON    ""
@@ -36,8 +36,8 @@
 
 #define     P_VERMAJOR  "2.--, clean, improve, and expand"
 #define     P_VERMINOR  "2.0-, separated into independent library"
-#define     P_VERNUM    "2.0f"
-#define     P_VERTXT    "updates to yVIKEYS compile !!!"
+#define     P_VERNUM    "2.0g"
+#define     P_VERTXT    "decent start at the man (3) file"
 
 #define     P_PRIORITY  "direct, simple, brief, vigorous, and lucid (h.w. fowler)"
 #define     P_PRINCIPAL "[grow a set] and build your wings on the way down (r. bradbury)"
