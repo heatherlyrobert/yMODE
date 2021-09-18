@@ -65,28 +65,29 @@ char        yMODE_exit              (void);
 char        yMODE_curr              (void);
 char        yMODE_prev              (void);
 char        yMODE_not               (char a_mode);
-char        yMODE_status            (char *a_list);
-char*       yMODE_message           (void);
 
 char        yMODE_get_allow         (char a_abbr, char *a_allow);
 char        yMODE_set_allow         (char a_abbr, char *a_allow);
 char        yMODE_get_message       (char a_abbr, char *a_mesg);
 char        yMODE_set_message       (char a_abbr, char *a_mesg);
 
-char*       yMODE_text              (void);
 char        yMODE_enter             (char a_mode);
 char        yMODE_exit              (void);
 char        yMODE_curr              (void);
 char        yMODE_prev              (void);
 char        yMODE_not               (char a_mode);
 
+char        yMODE_status            (char *a_list);
+char*       yMODE_update            (void);
+char*       yMODE_text              (void);
+char*       yMODE_message           (void);
 
 char        yMODE_check_prep        (char a_abbr);
 char        yMODE_check_needs       (char a_abbr);
 char        yMODE_operational       (char a_abbr);
 char        yMODE_init_set          (char a_abbr);
 char        yMODE_conf_set          (char a_abbr, char a_step);
-/*> char        yMODE_statuses          (FILE *a_file);                               <*/
+char        yMODE_statuses          (void *a_file);
 
 
 #endif

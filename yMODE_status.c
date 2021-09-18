@@ -450,7 +450,7 @@ ymode_status_init       (void)
 }
 
 char
-yMODE_statuses          (FILE *a_file)
+yMODE_statuses          (void *a_file)
 {
    /*---(locals)-----------+-----+-----+-*/
    int         n           =    0;
@@ -462,7 +462,9 @@ yMODE_statuses          (FILE *a_file)
    int         U           =    0;
    int         x           =    0;
    int         x_cat       =   -1;
+   FILE       *x_file      = NULL;
    /*---(list)---------------------------*/
+   x_file = (FILE *) a_file;
    fprintf (a_file, "yVIKEYS, capability status/readiness reporting                                          (:dump status)\n");
    fprintf (a_file, "                   ---expected-----------------------------   ---actual-------------------------------\n");
    fprintf (a_file, "---mode---   a c   prep--- i needs-- conf--- deps-------- o   prep--- i needs-- conf--- deps-------- o\n");

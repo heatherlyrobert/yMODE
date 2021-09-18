@@ -15,6 +15,7 @@ ymode_update            (void)
    return 0;
 }
 
+char* yMODE_update            (void) { ymode_update ();  return g_text; }
 char* yMODE_text              (void) { return g_text; }
 
 
@@ -48,13 +49,6 @@ yMODE_message           (void)
       if (g_modes [i].abbr == '-'   )   break;
       if (g_modes [i].abbr == g_mode_curr)  break;
    }
-   /*> if (g_modes  [i].type == MODE_MAJOR)  {                                        <* 
-    *>    x_major = g_mode_curr;                                                      <* 
-    *> } else {                                                                       <* 
-    *>    x_major = MODE_prev  ();                                                    <* 
-    *>    x_minor = g_mode_curr;                                                      <* 
-    *> }                                                                              <*/
-   snprintf (g_message, LEN_RECD, "[%c%c] %-3.3s : %s¦", x_major, x_minor, g_modes [i].three, g_modes [i].mesg);
    snprintf (g_message, LEN_RECD, "%-3.3s  %s¦", g_modes [i].three, g_modes [i].mesg);
    return g_message;
 }
