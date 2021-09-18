@@ -1,2 +1,2 @@
 # yMODE
-vi/vim mode tracking and control
+yVIKEYS sub-library for mode tracking
