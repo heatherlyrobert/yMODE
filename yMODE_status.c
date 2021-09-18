@@ -322,6 +322,10 @@ static void  o___STATUS_SETTING__o () { return; }
 char
 yMODE_init_set          (char a_abbr)
 {
+   /*---(design notes)-------------------*/
+   /*
+    *  allows re-initialization as is sometimes useful
+    */
    /*---(locals)-----------+-----+-----+-*/
    char        rce         =  -10;
    char        rc          =    0;
@@ -355,6 +359,10 @@ yMODE_init_set          (char a_abbr)
 char
 yMODE_conf_set          (char a_abbr, char a_step)
 {
+   /*---(design notes)-------------------*/
+   /*
+    *  allows re-configuration as is sometimes useful
+    */
    /*---(locals)-----------+-----+-----+-*/
    char        rce         =  -10;
    char        rc          =    0;
@@ -367,10 +375,19 @@ yMODE_conf_set          (char a_abbr, char a_step)
       DEBUG_MODE   yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
-   /*---(status)-------------------------*/
+   --rce;  if (a_step == 0 || strchr (YSTR_NUMBER, a_step) == NULL) {
+      DEBUG_MODE   yLOG_exitr   (__FUNCTION__, rce);
+      return rce;
+   }
    n = g_last;
-   /*---(ready)--------------------------*/
    DEBUG_MODE   yLOG_char    ("a_step"    , a_step);
+   DEBUG_MODE   yLOG_char    ("actual"    , g_actual [n]       [S_CONF + a_step - '1']);
+   DEBUG_MODE   yLOG_char    ("expect"    , g_modes [n].expect [S_CONF + a_step - '1']);
+   --rce;  if (g_modes [n].expect [S_CONF + a_step - '1'] != a_step) {
+      DEBUG_MODE   yLOG_exitr   (__FUNCTION__, rce);
+      return rce;
+   }
+   /*---(ready)--------------------------*/
    g_actual [n] [S_CONF + a_step - '1'] = a_step;
    /*---(mark others lines)--------------*/
    ymode__prep_checkall   ();
