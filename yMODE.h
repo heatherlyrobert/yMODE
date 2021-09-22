@@ -3,6 +3,7 @@
 #define yMODE yes
 
 
+typedef  unsigned char        uchar;
 
 /*===[[ CONSTANTS ]]==========================================================*/
 /*---(foundation)------------------------*/
@@ -32,16 +33,17 @@
 #define     SMOD_MENUS     'g'    /* show menu system (gui)                   */
 #define     SMOD_FILTER    '!'    /* data filtering                           */
 /*---(micro-modes)-----------------------*/
-#define     UMOD_SRC_UNDO  'u'    /* incremental text change undo/redo        */
-#define     UMOD_MAP_UNDO  'm'    /* incremental map change undo/redo         */
+#define     UMOD_SUNDO     'u'    /* incremental text change undo/redo        */
+#define     UMOD_MUNDO     'm'    /* incremental map change undo/redo         */
 #define     UMOD_HISTORY   'H'    /* dislay command/search history            */
 #define     UMOD_MARK      '\''   /* location and object marking              */
 #define     UMOD_VISUAL    'v'    /* visual selection history                 */
-#define     UMOD_REPEAT    '9'    /* accumulate multiplier                    */
-#define     UMOD_SRC_REPL  'r'    /* replacing characters in source mode      */
-#define     UMOD_SRC_INPT  'i'    /* direct input of text                     */
+#define     UMOD_REPLACE   'r'    /* replacing characters in source mode      */
+#define     UMOD_INPUT     'i'    /* direct input of text                     */
 #define     UMOD_WANDER    'w'    /* formula creation by pointing             */
 #define     UMOD_SENDKEYS  'k'    /* sending keys (but pacing them)           */
+/*---(pre-mode)--------------------------*/
+#define     PMOD_REPEAT    '9'    /* accumulate multiplier                    */
 /*---(external-modes)--------------------*/
 #define     XMOD_FORMAT    '$'    /* content formatting                       */
 #define     XMOD_PALETTE   'p'    /* palette/coloration                       */
@@ -62,6 +64,7 @@
 char*       yMODE_version           (void);
 char        yMODE_init              (char a_mode);
 char        yMODE_wrap              (void);
+uchar       yMODE_handle            (uchar a_key);
 /*---(control)--------------*/
 char        yMODE_enter             (char a_mode);
 char        yMODE_exit              (void);
@@ -83,9 +86,11 @@ char        yMODE_statuses          (void *a_file);
 char        yMODE_check_prep        (char a_abbr);
 char        yMODE_check_needs       (char a_abbr);
 char        yMODE_operational       (char a_abbr);
-char        yMODE_init_set          (char a_abbr);
+char        yMODE_init_set          (char a_abbr, void *a_handler);
 char        yMODE_conf_set          (char a_abbr, char a_step);
 /*---(done)-----------------*/
+char        yMODE_handler_setup     (void);
+char*       yMODE__unit             (char *a_question, int n);
 
 
 #endif

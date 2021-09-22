@@ -14,59 +14,60 @@ char    g_message       [LEN_RECD];
 char    g_last       = '-';
 char    g_text          [LEN_TERSE] = "··";
 
-char   *g_allow  [MAX_MODES] = { NULL };
-char    g_actual [MAX_MODES] [LEN_DESC];
-char   *g_mesg   [MAX_MODES] = { NULL };
+char   *g_allow   [MAX_MODES] = { NULL };
+char  (*g_handler [MAX_MODES]) (uchar a_major, uchar a_minor) = { NULL };
+char    g_actual  [MAX_MODES] [LEN_DESC];
+char   *g_mesg    [MAX_MODES] = { NULL };
 
 
 const tMODE_INFO  g_modes [MAX_MODES] = {
-   /*-abbr-------- ---type----- show  -tla- ---terse----- cat  ---expected-status----------------------   ---description--------------------------------------- ---message-------------------------------------------------------------------------------  */
-   /*---(fundamental)---------------- --------------------*//* prep--- - needs-- conf--- deps-------- -  */
-   { FMOD_STATUS  , MODE_FUND  , '-', "sta", "status"    , 0, "----- p i ----- n ----- r ---------- d o", "internal status and locking to prevent trouble"     , ""                                                                                        },
-   { FMOD_MODE    , MODE_FUND  , '-', "mod", "modes"     , 0, "5---- p i ----- n ----- r ---------- d o", "internal mode setting and tracking"                 , ""                                                                                        },
-   { FMOD_VIEW    , MODE_FUND  , '-', "vew", "viewing"   , 0, "5-:-- p i ----- n ----- r ---------- d o", "internal opengl and curses drawing manangement"     , ""                                                                                        },
-   { FMOD_FILE    , MODE_FUND  , '-', "fil", "files"     , 0, "5---- p i :---- n 1---- r ---------- d o", "internal file reading and writing"                  , ""                                                                                        },
-   /*---(map)------------------------ --------------------*//* prep--- - needs-- conf--- deps-------- -  */
-   { MODE_MAP     , MODE_MAJOR , 'y', "MAP", "map"       , 1, "5---- p i ----- n 1---- r 0--------- d o", "map-mode providing 2D review of object collections" , "horz(a)=0HhlL$  horz(g/z)=sh,le  vert(a)=_KkjJG  vert(g/z)=tk.jb  modes=vIFV:{ret}"      },
-   { UMOD_VISUAL  , MODE_MICRO , 'y', "vis", "visual"    , 1, "5f--- p i ----- n ----- r 0M-------- d o", "visual selection history and access"                , "index=a-zA-Z0-9   special=!?"                                                            },
-   { SMOD_MREG    , MODE_SUB   , 'y', "reg", "register"  , 1, "5f--- p i ----- n 1---- r 0M-------- d o", "selecting specific registers for data movement"     , "regs=\"a-zA-Z-+0  pull=yYxXdD  -/+=vVcCtTsSfF  push=pPrRmMaAiIoObB  mtce=#?!g"           },
-   { UMOD_MARK    , MODE_MICRO , 'y', "mrk", "mark"      , 1, "5f:-- p i ----- n ----- r 0M-------- d o", "object and location marking"                        , "names=a-zA-Z0-9  actions=#!?_  special='[()]  wander=@  range=<>*"                       },
-   { SMOD_MACRO   , MODE_SUB   , 'y', "mac", "macro"     , 1, "5f:-- p i ----- n ----- r 0--------- d o", "macro recording, execution, and maintenance"        , "run=a-z"                                                                                 },
-   { UMOD_SENDKEYS, MODE_MICRO , 'y', "sky", "sendkeys"  , 1, "5---- p i ----- n ----- r 0--------- d o", "macro recording, execution, and maintenance"        , "run=a-z"                                                                                 },
-   { XMOD_FORMAT  , MODE_EXTERN, 'y', "frm", "format"    , 1, "5---- p i ----- n ----- r 0--------- d o", "content formatting options"                         , "w=mnNwWhHlL  a=<|>[^]{}:' f=iIfeE ,cCaA$sS; oOxXbBzZrR d=0123456789  f=-=_.+!/@qQ~#"     },
-   { XMOD_UNITS   , MODE_EXTERN, 'y', "unt", "units"     , 1, "5---- p i ----- n ----- r 0--------- d o", "content formatting options"                         , "off -, (+24) Y Z E P T G M K H D . d c m u n p f a z y (-24)"                            },
-   { XMOD_OBJECT  , MODE_EXTERN, 'y', "obj", "object"    , 1, "5---- p i ----- n ----- r 0--------- d o", "object formatting and sizing options"               , ""                                                                                        },
-   { XMOD_PALETTE , MODE_EXTERN, 'y', "pal", "palette"   , 1, "5---- p i ----- n ----- r 0--------- d o", "provides automatic and manual labeling hints"       , ""                                                                                        },
-   { UMOD_MAP_UNDO, MODE_SUB   , 'y', "mun", "map-undo"  , 1, "5---- p i ----- n 1---- r 0--------- d o", "map level undo and redo"                            , ""                                                                                        },
-   /*---(source)--------------------- --------------------*//* prep--- - needs-- conf--- deps-------- -  */
-   { MODE_SOURCE  , MODE_MAJOR , 'y', "SRC", "source"    , 2, "5---- p i ----- n 1---- r 0MV------- d o", "linewise review of textual content"                 , "hor=0HhlL$bBeEwW  g/z=sh,le  sel=vV\"  pul=yYdDxX  put=pP  chg=rRiIaA  fnd=fnN"          },
-   { SMOD_SREG    , MODE_SUB   , 'y', "srg", "src reg"   , 2, "5f:-- p i ----- n ----- r 0--------- d o", "selecting specific registers for text movement"     , "regs=\"a-zA-Z-+0  pull=yYxXdD  -/+=vVcCtTsSfF  push=pPrRmMaAiIoObB  mtce=#?!g"           },
-   { UMOD_SRC_REPL, MODE_MICRO , 'y', "rpl", "replace"   , 2, "5---- p i ----- n ----- r 0--------- d o", "linewise overtyping of content in source mode"      , "type over character marked with special marker"                                          },
-   { UMOD_SRC_INPT, MODE_MICRO , 'y', "inp", "input"     , 2, "5---- p i ----- n ----- r 0--------- d o", "linewise creation and editing of textual content"   , ""                                                                                        },
-   { UMOD_WANDER  , MODE_MICRO , 'y', "wdr", "wander"    , 2, "5---- p i ----- n ----- r 0--------- d o", "formula creation by moving to target cells"         , "modes={ret}{esc}"                                                                        },
-   { UMOD_SRC_UNDO, MODE_SUB   , 'y', "sun", "src-undo"  , 2, "5---- p i ----- n ----- r 0--------- d o", "source level undo and redo"                         , ""                                                                                        },
-   /*---(power)---------------------- --------------------*//* prep--- - needs-- conf--- deps-------- -  */
-   { MODE_COMMAND , MODE_MAJOR , '-', "CMD", "command"   , 3, "5f--- p i ----- n ----- r 0--------- d o", "command line capability for advanced actions"       , ""                                                                                        },
-   { MODE_SEARCH  , MODE_MAJOR , '-', "SCH", "search"    , 3, "5f--- p i ----- n 1---- r 0M-------- d o", "search mode to find data and objects"               , ""                                                                                        },
-   { UMOD_HISTORY , MODE_MICRO , 'y', "his", "history"   , 3, "5---- p i ----- n ----- r 0-V------- d o", "search and command history access"                  , ""                                                                                        },
-   { SMOD_FILTER  , MODE_SUB   , 'y', "fil", "filter"    , 3, "5---- p i ----- n ----- r 0--------- d o", "process current/selection through external filter"  , "0HhlL$_KkjJG  gz=sh,letk.jb  dxy  !: ~uU /nN oO sS"                                      },
-   { SMOD_ERROR   , MODE_SUB   , 'y', "err", "errors"    , 3, "5---- p i ----- n ----- r 0--------- d o", "display and action errors"                          , ""                                                                                        },
-   /*---(overall)-------------------- --------------------*//* prep--- - needs-- conf--- deps-------- -  */
-   { MODE_GOD     , MODE_MAJOR , 'y', "GOD", "god"       , 4, "5---- p i ----- n ----- r 0--------- d o", "god-mode allowing 3D omnicient viewing"             , "linear=LnhHJjkKIioO  rotate=PpaAYytTRrwW"                                                },
-   { MODE_OMNI    , MODE_MAJOR , 'y', "OMN", "omni"      , 4, "5---- p i ----- n ----- r 0--------- d o", "omnipotent 3D manipulation mode"                    , "linear=LnhHJjkKIioO  rotate=PpaAYytTRrwW"                                                },
-   { SMOD_BUFFER  , MODE_SUB   , 'y', "buf", "buffer"    , 4, "5---- p i ----- n 1---- r M--------- d o", "moving and selecting between buffers and windows"   , "select=0-9A-Z   move=jk   panel=abdgpqrtxy   cursor=_[<,>]~   search=/   status=_"       },
-   { SMOD_MENUS   , MODE_SUB   , 'y', "mnu", "menus"     , 4, "5---- p i ----- n ----- r 0--------- d o", "interactive menu system for accessing commands"     , ""                                                                                        },
-   { SMOD_HINT    , MODE_MAJOR , 'y', "hnt", "hint"      , 4, "5---- p i ----- n 1---- r 0M-------- d o", "provides automatic and manuallabeling hints"        , ""                                                                                        },
-   { UMOD_REPEAT  , MODE_MICRO , 'y', "rep", "repeat"    , 4, "5---- p i ----- n ----- r 0--------- d o", "accumulate multiplier"                              , "range 1-99"                                                                              },
-   /*---(time)----------------------- --------------------*//* prep--- - needs-- conf--- deps-------- -  */
-   { MODE_PROGRESS, MODE_MAJOR , 'y', "PRG", "progress"  , 5, "5---- p i ----- n ----- r 0--------- d o", "progress timeline adding time dimension"            , "horz=0LlhH$  vert=_KkjJ~  speed=<>  scale=io  play=,."                                   },
-   /*---(done)----------------------- --------------------*//* prep--- - needs-- conf--- deps-------- -  */
-   { '-'          , MODE_NOT   , 'y', "bad", "bad mode"  , 0, "5---- p i ----- n ----- r 0--------- d o", "default message when mode is not understood"        , "mode not understood"                                                                     },
-   /*-abbr-------- ---type----- show  -tla- ---terse----- cat  ---expected-status----------------------   ---description--------------------------------------- ---message-------------------------------------------------------------------------------  */
+   /*-abbr-------- ---type----- show  -tla- ---terse----- cat  ---expected-status------------------------   ---description--------------------------------------- ---message-------------------------------------------------------------------------------  */
+   /*---(fundamental)---------------- --------------------*//* prep--- f - needs-- conf--- deps-------- -  */
+   { FMOD_STATUS  , MODE_FUND  , '-', "sta", "status"    , 0, "----- p - i ----- n ----- r ---------- d o", "internal status and locking to prevent trouble"     , ""                                                                                        },
+   { FMOD_MODE    , MODE_FUND  , '-', "mod", "modes"     , 0, "5---- p - i ----- n ----- r ---------- d o", "internal mode setting and tracking"                 , ""                                                                                        },
+   { FMOD_VIEW    , MODE_FUND  , '-', "vew", "viewing"   , 0, "5-:-- p - i ----- n ----- r ---------- d o", "internal opengl and curses drawing manangement"     , ""                                                                                        },
+   { FMOD_FILE    , MODE_FUND  , '-', "fil", "files"     , 0, "5---- p - i :---- n 1---- r ---------- d o", "internal file reading and writing"                  , ""                                                                                        },
+   /*---(map)------------------------ --------------------*//* prep--- f - needs-- conf--- deps-------- -  */
+   { MODE_MAP     , MODE_MAJOR , 'y', "MAP", "map"       , 1, "5---- p f i ----- n 1---- r 0--------- d o", "map-mode providing 2D review of object collections" , "horz(a)=0HhlL$  horz(g/z)=sh,le  vert(a)=_KkjJG  vert(g/z)=tk.jb  modes=vIFV:{ret}"      },
+   { UMOD_VISUAL  , MODE_MICRO , 'y', "vis", "visual"    , 1, "5f--- p f i ----- n ----- r 0M-------- d o", "visual selection history and access"                , "index=a-zA-Z0-9   special=!?"                                                            },
+   { SMOD_MREG    , MODE_SUB   , 'y', "reg", "register"  , 1, "5f--- p f i ----- n 1---- r 0M-------- d o", "selecting specific registers for data movement"     , "regs=\"a-zA-Z-+0  pull=yYxXdD  -/+=vVcCtTsSfF  push=pPrRmMaAiIoObB  mtce=#?!g"           },
+   { UMOD_MARK    , MODE_MICRO , 'y', "mrk", "mark"      , 1, "5f:-- p f i ----- n ----- r 0M-------- d o", "object and location marking"                        , "names=a-zA-Z0-9  actions=#!?_  special='[()]  wander=@  range=<>*"                       },
+   { SMOD_MACRO   , MODE_SUB   , 'y', "mac", "macro"     , 1, "5f:-- p f i ----- n ----- r 0--------- d o", "macro recording, execution, and maintenance"        , "run=a-z"                                                                                 },
+   { UMOD_SENDKEYS, MODE_MICRO , 'y', "sky", "sendkeys"  , 1, "5---- p f i ----- n ----- r 0--------- d o", "macro recording, execution, and maintenance"        , "run=a-z"                                                                                 },
+   { XMOD_FORMAT  , MODE_EXTERN, 'y', "frm", "format"    , 1, "5---- p f i ----- n ----- r 0--------- d o", "content formatting options"                         , "w=mnNwWhHlL  a=<|>[^]{}:' f=iIfeE ,cCaA$sS; oOxXbBzZrR d=0123456789  f=-=_.+!/@qQ~#"     },
+   { XMOD_UNITS   , MODE_EXTERN, 'y', "unt", "units"     , 1, "5---- p f i ----- n ----- r 0--------- d o", "content formatting options"                         , "off -, (+24) Y Z E P T G M K H D . d c m u n p f a z y (-24)"                            },
+   { XMOD_OBJECT  , MODE_EXTERN, 'y', "obj", "object"    , 1, "5---- p f i ----- n ----- r 0--------- d o", "object formatting and sizing options"               , ""                                                                                        },
+   { XMOD_PALETTE , MODE_EXTERN, 'y', "pal", "palette"   , 1, "5---- p f i ----- n ----- r 0--------- d o", "provides automatic and manual labeling hints"       , ""                                                                                        },
+   { UMOD_MUNDO   , MODE_SUB   , 'y', "mun", "map-undo"  , 1, "5---- p f i ----- n 1---- r 0--------- d o", "map level undo and redo"                            , ""                                                                                        },
+   /*---(source)--------------------- --------------------*//* prep--- f - needs-- conf--- deps-------- -  */
+   { MODE_SOURCE  , MODE_MAJOR , 'y', "SRC", "source"    , 2, "5---- p f i ----- n 1---- r 0MV------- d o", "linewise review of textual content"                 , "hor=0HhlL$bBeEwW  g/z=sh,le  sel=vV\"  pul=yYdDxX  put=pP  chg=rRiIaA  fnd=fnN"          },
+   { SMOD_SREG    , MODE_SUB   , 'y', "srg", "src reg"   , 2, "5f:-- p f i ----- n ----- r 0--------- d o", "selecting specific registers for text movement"     , "regs=\"a-zA-Z-+0  pull=yYxXdD  -/+=vVcCtTsSfF  push=pPrRmMaAiIoObB  mtce=#?!g"           },
+   { UMOD_REPLACE , MODE_MICRO , 'y', "rpl", "replace"   , 2, "5---- p f i ----- n ----- r 0--------- d o", "linewise overtyping of content in source mode"      , "type over character marked with special marker"                                          },
+   { UMOD_INPUT   , MODE_MICRO , 'y', "inp", "input"     , 2, "5---- p f i ----- n ----- r 0--------- d o", "linewise creation and editing of textual content"   , ""                                                                                        },
+   { UMOD_WANDER  , MODE_MICRO , 'y', "wdr", "wander"    , 2, "5---- p f i ----- n ----- r 0--------- d o", "formula creation by moving to target cells"         , "modes={ret}{esc}"                                                                        },
+   { UMOD_SUNDO   , MODE_SUB   , 'y', "sun", "src-undo"  , 2, "5---- p f i ----- n ----- r 0--------- d o", "source level undo and redo"                         , ""                                                                                        },
+   /*---(power)---------------------- --------------------*//* prep--- f - needs-- conf--- deps-------- -  */
+   { MODE_COMMAND , MODE_MAJOR , '-', "CMD", "command"   , 3, "5f--- p f i ----- n ----- r 0--------- d o", "command line capability for advanced actions"       , ""                                                                                        },
+   { MODE_SEARCH  , MODE_MAJOR , '-', "SCH", "search"    , 3, "5f--- p f i ----- n 1---- r 0M-------- d o", "search mode to find data and objects"               , ""                                                                                        },
+   { UMOD_HISTORY , MODE_MICRO , 'y', "his", "history"   , 3, "5---- p f i ----- n ----- r 0-V------- d o", "search and command history access"                  , ""                                                                                        },
+   { SMOD_FILTER  , MODE_SUB   , 'y', "fil", "filter"    , 3, "5---- p f i ----- n ----- r 0--------- d o", "process current/selection through external filter"  , "0HhlL$_KkjJG  gz=sh,letk.jb  dxy  !: ~uU /nN oO sS"                                      },
+   { SMOD_ERROR   , MODE_SUB   , 'y', "err", "errors"    , 3, "5---- p f i ----- n ----- r 0--------- d o", "display and action errors"                          , ""                                                                                        },
+   /*---(overall)-------------------- --------------------*//* prep--- f - needs-- conf--- deps-------- -  */
+   { MODE_GOD     , MODE_MAJOR , 'y', "GOD", "god"       , 4, "5---- p f i ----- n ----- r 0--------- d o", "god-mode allowing 3D omnicient viewing"             , "linear=LnhHJjkKIioO  rotate=PpaAYytTRrwW"                                                },
+   { MODE_OMNI    , MODE_MAJOR , 'y', "OMN", "omni"      , 4, "5---- p f i ----- n ----- r 0--------- d o", "omnipotent 3D manipulation mode"                    , "linear=LnhHJjkKIioO  rotate=PpaAYytTRrwW"                                                },
+   { SMOD_BUFFER  , MODE_SUB   , 'y', "buf", "buffer"    , 4, "5---- p f i ----- n 1---- r M--------- d o", "moving and selecting between buffers and windows"   , "select=0-9A-Z   move=jk   panel=abdgpqrtxy   cursor=_[<,>]~   search=/   status=_"       },
+   { SMOD_MENUS   , MODE_SUB   , 'y', "mnu", "menus"     , 4, "5---- p f i ----- n ----- r 0--------- d o", "interactive menu system for accessing commands"     , ""                                                                                        },
+   { SMOD_HINT    , MODE_MAJOR , 'y', "hnt", "hint"      , 4, "5---- p f i ----- n 1---- r 0M-------- d o", "provides automatic and manuallabeling hints"        , ""                                                                                        },
+   { PMOD_REPEAT  , MODE_MICRO , 'y', "rep", "repeat"    , 4, "5---- p f i ----- n ----- r 0--------- d o", "accumulate multiplier"                              , "range 1-99"                                                                              },
+   /*---(time)----------------------- --------------------*//* prep--- f - needs-- conf--- deps-------- -  */
+   { MODE_PROGRESS, MODE_MAJOR , 'y', "PRG", "progress"  , 5, "5---- p f i ----- n ----- r 0--------- d o", "progress timeline adding time dimension"            , "horz=0LlhH$  vert=_KkjJ~  speed=<>  scale=io  play=,."                                   },
+   /*---(done)----------------------- --------------------*//* prep--- f - needs-- conf--- deps-------- -  */
+   { '-'          , MODE_NOT   , 'y', "bad", "bad mode"  , 0, "5---- p f i ----- n ----- r 0--------- d o", "default message when mode is not understood"        , "mode not understood"                                                                     },
+   /*-abbr-------- ---type----- show  -tla- ---terse----- cat  ---expected-status------------------------   ---description--------------------------------------- ---message-------------------------------------------------------------------------------  */
 };
 int  g_nmode   = 0;
 
-   /*> { 0            , MODE_NOT   , 'y', "bad", "bad mode"  , 0, "5---- p i ----- n ----- r 0--------- d o", "----- - - ----- - ----- - ---------- - -", "default message when mode is not understood"        , "mode not understood"                                                                     ,    0 },   <*/
+/*> { 0            , MODE_NOT   , 'y', "bad", "bad mode"  , 0, "5---- p i ----- n ----- r 0--------- d o", "----- - - ----- - ----- - ---------- - -", "default message when mode is not understood"        , "mode not understood"                                                                     ,    0 },   <*/
 char        g_majors       [MAX_MODES] = "";
 
 
@@ -140,7 +141,7 @@ yMODE_init              (char a_mode)
     *> s_uniter    = NULL;                                                            <* 
     *> s_paletter  = NULL;                                                            <*/
    /*---(update status)------------------*/
-   yMODE_init_set   (FMOD_MODE);
+   yMODE_init_set   (FMOD_MODE, NULL);
    /*---(go to default mode)-------------*/
    if (a_mode == MODE_GOD)  yMODE_enter (MODE_GOD);
    else                     yMODE_enter (MODE_MAP);
@@ -157,6 +158,193 @@ yMODE_wrap              (void)
    ymode_mesg_purge   ();
    return 0;
 }
+
+uchar
+yMODE_handle            (uchar a_key)
+{
+   /*---(locals)-----------+-----+-----+-*/
+   char        rce         =  -10;
+   char        rc          = 0;             /* generic return code            */
+   static char x_major     = G_KEY_SPACE;   /* saved keystroke from last loop */
+   uchar       x_minor     = ' ';
+   char      (*x_handler) (uchar a_major, uchar a_minor) = NULL;
+   int         x_repeat    = 0;             /* store current repeat count     */
+   int         n           = 0;
+   char        x_keys      [LEN_LABEL];
+   /*---(header)-------------------------*/
+   DEBUG_LOOP   yLOG_enter   (__FUNCTION__);
+   DEBUG_LOOP   yLOG_value   ("a_key"     , a_key);
+   /*---(defense)------------------------*/
+   if (a_key == 0) {
+      DEBUG_LOOP   yLOG_exit    (__FUNCTION__);
+      return 0;
+   }
+   DEBUG_LOOP   yLOG_note    ("REAL KEY");
+   x_minor = chrworking (a_key);
+   DEBUG_LOOP   yLOG_value   ("x_minor"   , x_minor);
+   /*> myVIKEYS.trouble   = '-';                                                      <*/
+   /*---(handle count)-------------------*/
+   if (yMODE_curr () == PMOD_REPEAT) {
+      rc = yKEYS_repeat_umode (x_major, x_minor);
+      if (rc >  0)  x_major = G_KEY_SPACE;
+   }
+   /*---(mode)---------------------------*/
+   n = ymode_by_abbr (yMODE_curr ());
+   --rce;  if (n < 0) {
+      yMODE_exit ();
+      DEBUG_LOOP   yLOG_exitr   (__FUNCTION__, rce);
+      return rce;
+   }
+   /*---(handler)------------------------*/
+   x_handler = g_handler [n];
+   --rce;  if (x_handler == NULL) {
+      yMODE_exit ();
+      DEBUG_LOOP   yLOG_exitr   (__FUNCTION__, rce);
+      return rce;
+   }
+   /*---(loop)---------------------------*/
+   while (1) {
+      /*---(run mode)--------------------*/
+      DEBUG_LOOP   yLOG_char    ("MODE bef"  , yMODE_curr ());
+      rc = x_handler (x_major, x_minor);
+      DEBUG_USER   yLOG_value   ("rc"        , rc);
+      DEBUG_LOOP   yLOG_char    ("MODE aft"  , yMODE_curr ());
+      /*---(translate unprintable)-------*/
+      x_repeat = yKEYS_repeats ();
+      DEBUG_USER   yLOG_value   ("x_repeat"  , x_repeat);
+      snprintf (x_keys,   9, " %2x%c%c"  , x_minor, x_major, chrvisible (x_minor));
+      /*---(loop repeats)----------------*/
+      if (rc == 0 && x_repeat > 0 && yMODE_curr () != PMOD_REPEAT) {
+         DEBUG_USER   yLOG_note    ("repeating");
+         yKEYS_repeat_dec ();
+         continue;
+      }
+      /*---(loop repeats)----------------*/
+      if (rc <= 0 && yMODE_curr () != PMOD_REPEAT) {
+         DEBUG_USER   yLOG_note    ("complete repeat");
+         yKEYS_repeat_reset ();
+      }
+      break;
+      /*---(done)------------------------*/
+   }
+   /*---(setup for next keystroke)-------*/
+   if      (rc == 0)    x_major = G_KEY_SPACE;
+   else if (rc >  0)    x_major = rc;
+   else {
+      x_major = G_KEY_SPACE;
+      /*> yvikeys_set_error ();                                                       <*/
+      /*> myVIKEYS.trouble = 'y';                                                     <*/
+      yKEYS_repeat_reset ();
+   }
+   /*> yvikeys_view_keys (x_keys);                                                    <*/
+   /*---(complete)-----------------------*/
+   DEBUG_LOOP   yLOG_exit    (__FUNCTION__);
+   return rc;
+}
+
+uchar        /*-> process main loop keyboard input ---[ leaf   [gc.GD1.132.IM]*/ /*-[05.0000.111.R]-*/ /*-[--.---.---.--]-*/
+yMODE_handle_old        (uchar a_key)
+{
+   /*---(locals)-----------+-----+-----+-*/
+   char        rc          = 0;             /* generic return code            */
+   static char x_major     = ' ';           /* saved keystroke from last loop */
+   static char x_savemode  = '-';           /* to identify mode changes       */
+   int         x_repeat    = 0;             /* store current repeat count     */
+   char        x_nomode    = '-';           /* flag illegal mode              */
+   uchar       x_minor     = ' ';
+   char        x_keys      [LEN_LABEL];
+   /*---(header)-------------------------*/
+   DEBUG_LOOP   yLOG_enter   (__FUNCTION__);
+   DEBUG_LOOP   yLOG_value   ("a_key"     , a_key);
+   /*---(defense)------------------------*/
+   if (a_key == 0) {
+      DEBUG_LOOP   yLOG_exit    (__FUNCTION__);
+      return 0;
+   }
+   DEBUG_LOOP   yLOG_note    ("REAL KEY");
+   /*---(prepare)------------------------*/
+   /*> myVIKEYS.trouble   = '-';                                                      <*/
+   x_minor = chrworking (a_key);
+   DEBUG_LOOP   yLOG_value   ("x_minor"   , x_minor);
+   /*---(handle count)-------------------*/
+   if (yMODE_curr () == PMOD_REPEAT) {
+      rc = yKEYS_repeat_umode (x_major, x_minor);
+      if (rc >  0)  x_major = G_KEY_SPACE;
+   }
+   /*---(main loop)----------------------*/
+   while (1) {
+      DEBUG_LOOP   yLOG_char    ("MODE bef"  , yMODE_curr ());
+      /*---(handle keystroke)------------*/
+      switch (yMODE_curr ()) {
+         /*> case MODE_GOD      : rc = GOD_mode              (x_major , x_minor);  break;   <* 
+          *> case MODE_PROGRESS : rc = PROGRESS_mode         (x_major , x_minor);  break;   <* 
+          *> case MODE_MAP      : rc = yvikeys_map_mode      (x_major , x_minor);  break;   <*/
+
+         /*> case MODE_SOURCE   : rc = SOURCE_mode           (x_major , x_minor);  break;   <* 
+          *> case UMOD_INPUT    : rc = SRC_INPT_umode        (x_major , x_minor);  break;   <* 
+          *> case SMOD_SREG     : rc = yvikeys_sreg_smode    (x_major , x_minor);  break;   <*/
+
+         /*> case UMOD_REPLACE  : rc = SRC_REPL_umode        (x_major , x_minor);  break;   <* 
+          *> case UMOD_SUNDO    : rc = BASE__________stub    (x_major , x_minor);  break;   <* 
+          *> case UMOD_MUNDO    : rc = BASE__________stub    (x_major , x_minor);  break;   <*/
+
+         /*> case MODE_COMMAND  : rc = SOURCE_mode           (x_major , x_minor);  break;   <* 
+          *> case SMOD_HINT     : rc = SOURCE_mode           (x_major , x_minor);  break;   <* 
+          *> case MODE_SEARCH   : rc = SOURCE_mode           (x_major , x_minor);  break;   <*/
+
+         /*> case UMOD_HISTORY  : rc = yvikeys_hist_umode    (x_major , x_minor);  break;   <* 
+          *> case UMOD_VISUAL   : rc = yvikeys_visu_umode    (x_major , x_minor);  break;   <* 
+          *> case SMOD_ERROR    : rc = BASE__________stub    (x_major , x_minor);  break;   <*/
+
+         /*> case XMOD_FORMAT   : rc = FORMAT_xmode          (x_major , x_minor);  break;   <* 
+          *> case XMOD_PALETTE  : rc = PALETTE_xmode         (x_major , x_minor);  break;   <* 
+          *> case XMOD_UNITS    : rc = UNITS_xmode           (x_major , x_minor);  break;   <*/
+
+         /*> case SMOD_BUFFER   : rc = yvikeys_bufs_umode    (x_major , x_minor);  break;   <* 
+          *> case UMOD_WANDER   : rc = yvikeys_map_wander    (x_major , x_minor);  break;   <* 
+          *> case SMOD_MREG     : rc = yvikeys_mreg_smode    (x_major , x_minor);  break;   <*/
+
+         /*> case UMOD_MARK     : rc = yvikeys_mark_smode    (x_major , x_minor);  break;   <* 
+          *> case SMOD_MENUS    : rc = yvikeys_menu_smode    (x_major , x_minor);  break;   <* 
+          *> case SMOD_MACRO    : rc = yvikeys_macro_smode   (x_major , x_minor);  break;   <*/
+
+         /*> case UMOD_SENDKEYS : rc = SENDKEYS_umode        (x_major , x_minor);  break;   <*/
+         /*> case PMOD_REPEAT   :                                                break;   <*/
+      default            : rc = -1;  x_nomode = 'y';                      break;
+      }
+      DEBUG_USER   yLOG_value   ("rc"        , rc);
+      DEBUG_LOOP   yLOG_char    ("MODE aft"  , yMODE_curr ());
+      /*---(translate unprintable)-------*/
+      /*> x_repeat = REPEAT_count ();                                                 <*/
+      DEBUG_USER   yLOG_value   ("x_repeat"  , x_repeat);
+      /*> snprintf (x_keys,   9, "%2d %c%c"  , x_repeat, x_major, chrvisible (x_minor));   <*/
+      snprintf (x_keys,   9, " %2x%c%c"  , x_minor, x_major, chrvisible (x_minor));
+      /*---(loop repeats)----------------*/
+      if (rc == 0 && x_repeat > 0 && yMODE_curr () != PMOD_REPEAT) {
+         DEBUG_USER   yLOG_note    ("repeating");
+         /*> REPEAT_decrement ();                                                     <*/
+         continue;
+      }
+      /*---(loop repeats)----------------*/
+      if (rc <= 0 && yMODE_curr () != PMOD_REPEAT) {
+         DEBUG_USER   yLOG_note    ("complete repeat");
+         yKEYS_repeat_reset ();
+      }
+      break;
+      /*---(done)------------------------*/
+   }
+   /*---(setup for next keystroke)-------*/
+   if      (rc == 0)    x_major = G_KEY_SPACE;
+   else if (rc >  0)    x_major = rc;
+   /*> else               { x_major = G_KEY_SPACE;  yvikeys_set_error ();  myVIKEYS.trouble = 'y';  REPEAT_reset (); }   <*/
+   /*> yvikeys_view_keys (x_keys);                                                    <*/
+   /*---(save current mode)--------------*/
+   x_savemode = yMODE_curr ();
+   /*---(complete)-----------------------*/
+   DEBUG_LOOP   yLOG_exit    (__FUNCTION__);
+   return rc;
+}
+
 
 
 
@@ -197,14 +385,118 @@ char       /*----: stop logging ----------------------------------------------*/
 ymode__unit_end         (void)
 {
    DEBUG_MODE  yLOG_enter   (__FUNCTION__);
-   /*> yVIKEYS_wrap ();                                                               <*/
+   yMODE_wrap ();
    DEBUG_MODE  yLOG_exit    (__FUNCTION__);
    yLOGS_end    ();
    return 0;
 }
 
+char ymode_handler_stub   (uchar a_major, uchar a_minor) { return 0; }
+
+static char  s_keys [LEN_RECD] = "";
+static char  s_mode [LEN_RECD] = "";
+
+char
+ymode_handler_reset     (void)
+{
+   strlcpy (s_keys, "", LEN_RECD);
+   strlcpy (s_mode, "", LEN_RECD);
+   return 0;
+}
+
+char
+ymode_handler_log       (uchar a_mode, uchar a_key)
+{
+   char        t           [LEN_TERSE] = "";
+   sprintf (t, "%c", a_mode);
+   strlcat (s_mode, t, LEN_RECD);
+   sprintf (t, "%c", chrvisible (a_key));
+   strlcat (s_keys, t, LEN_RECD);
+   return 0;
+}
+
+char
+ymode_handler_map        (uchar a_major, uchar a_minor)
+{
+   ymode_handler_log ('M', a_minor);
+   switch (a_minor) {
+   case '¦'  : case G_KEY_RETURN :
+      yMODE_enter (MODE_SOURCE);
+      yMODE_enter (UMOD_INPUT);
+      break;
+   case '¥'  : case G_KEY_ESCAPE :
+      break;
+   case ':'  :
+      yMODE_enter (MODE_COMMAND);
+      break;
+   }
+   return 0;
+}
+
+char
+ymode_handler_source     (uchar a_major, uchar a_minor)
+{
+   ymode_handler_log ('S', a_minor);
+   switch (a_minor) {
+   case '¦'  : case G_KEY_RETURN :
+      yMODE_exit  ();
+      break;
+   case '¥'  : case G_KEY_ESCAPE :
+      yMODE_exit  ();
+      break;
+   case 'I'  : case 'i'  : case 'a'  : case 'A'  :
+      yMODE_enter (UMOD_INPUT);
+   }
+   return 0;
+}
+
+char
+ymode_handler_input      (uchar a_major, uchar a_minor)
+{
+   ymode_handler_log ('i', a_minor);
+   switch (a_minor) {
+   case '¥'  : case G_KEY_ESCAPE :
+      yMODE_exit  ();
+      break;
+   case '¦'  : case G_KEY_RETURN :
+      yMODE_exit  ();
+      yMODE_exit  ();
+      break;
+   }
+   return 0;
+}
+
+char
+ymode_handler_command    (uchar a_major, uchar a_minor)
+{
+   ymode_handler_log (':', a_minor);
+   switch (a_minor) {
+   case '¦'  : case G_KEY_RETURN :
+   case '¥'  : case G_KEY_ESCAPE :
+      yMODE_exit  ();
+      break;
+   }
+   return 0;
+}
+
+char
+yMODE_handler_setup     (void)
+{
+   yMODE_init_set (FMOD_FILE    , NULL);
+   yMODE_init_set (MODE_COMMAND , ymode_handler_command);
+   yMODE_conf_set (FMOD_FILE    , '1');
+   yMODE_init_set (FMOD_VIEW    , NULL);
+   yMODE_init_set (MODE_MAP     , ymode_handler_map);
+   yMODE_conf_set (MODE_MAP     , '1');
+   yMODE_init_set (MODE_SOURCE  , ymode_handler_source);
+   yMODE_conf_set (MODE_SOURCE  , '1');
+   yMODE_init_set (UMOD_INPUT   , ymode_handler_input);
+   yKEYS_init ();
+   return 0;
+}
+
 char*        /*-> unit test accessor -----------------[ light  [us.420.111.11]*/ /*-[01.0000.00#.Z]-*/ /*-[--.---.---.--]-*/
-ymode__unit             (char *a_question, int n)
+yMODE__unit             (char *a_question, int n)
 {
    /*---(locals)-----------+-----------+-*/
    char        r           [LEN_FULL]  = "";
@@ -233,6 +525,12 @@ ymode__unit             (char *a_question, int n)
    }
    else if (strcmp (a_question, "text"         )  == 0) {
       snprintf (unit_answer, LEN_FULL, "MODE text        : %s", g_text);
+   }
+   else if (strcmp (a_question, "u_modes"      )  == 0) {
+      snprintf (unit_answer, LEN_FULL, "MODE u_modes     : å%-.80sæ", s_mode);
+   }
+   else if (strcmp (a_question, "u_keys"       )  == 0) {
+      snprintf (unit_answer, LEN_FULL, "MODE u_keys      : å%-.80sæ", s_keys);
    }
    /*---(complete)-----------------------*/
    return unit_answer;

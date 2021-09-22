@@ -70,8 +70,8 @@ yMODE_statuses          (void *a_file)
    /*---(list)---------------------------*/
    x_file = (FILE *) a_file;
    fprintf (a_file, "yVIKEYS, capability status/readiness reporting                                          (:dump status)\n");
-   fprintf (a_file, "                   ---expected-----------------------------   ---actual-------------------------------\n");
-   fprintf (a_file, "---mode---   a c   prep--- i needs-- conf--- deps-------- o   prep--- i needs-- conf--- deps-------- o\n");
+   fprintf (a_file, "                   ---expected-------------------------------   ---actual---------------------------------\n");
+   fprintf (a_file, "---mode---   a c   prep--- f i needs-- conf--- deps-------- o   prep--- f i needs-- conf--- deps-------- o\n");
    for (n = 0; n < g_nmode; ++n) {
       if (x_cat != g_modes [n].cat)  fprintf (a_file, "¦");
       if (strchr ("MF", g_modes [n].type) != NULL)  strlcpy (t, g_modes [n].terse, LEN_LABEL);
@@ -88,11 +88,12 @@ yMODE_statuses          (void *a_file)
       }
    }
    fprintf (a_file, "\n");
-   fprintf (a_file, "---mode---   a c   prep--- i needs-- conf--- deps-------- o   prep--- i needs-- conf--- deps-------- o\n");
-   fprintf (a_file, "                   ---expected-----------------------------   ---actual-------------------------------\n");
+   fprintf (a_file, "---mode---   a c   prep--- f i needs-- conf--- deps-------- o   prep--- f i needs-- conf--- deps-------- o\n");
+   fprintf (a_file, "                   ---expected-------------------------------   ---actual---------------------------------\n");
    fprintf (a_file, "status mode count %d (fund %d, major %d, sub %d, micro %d, extern %d)\n", c, F, M, S, U, x);
    fprintf (a_file, "\n");
    fprintf (a_file, "prep  = must be initialized before this mode can initialize\n");
+   fprintf (a_file, "f     = mode handler function pointer\n");
    fprintf (a_file, "i     = initialized and ready to configure\n");
    fprintf (a_file, "needs = must be initialized before this mode can configure\n");
    fprintf (a_file, "conf  = externally called steps in the configuration process\n");

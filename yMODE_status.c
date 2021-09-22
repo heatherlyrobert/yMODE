@@ -8,18 +8,19 @@
 #define       S_PRE        0
 #define       S_PREP       6
 
-#define       S_INIT       8
+#define       S_FUNC       8
+#define       S_INIT      10
 
-#define       S_NEEDS     10
-#define       S_BASE      16
+#define       S_NEEDS     12
+#define       S_BASE      18
 
-#define       S_CONF      18
-#define       S_READY     24
+#define       S_CONF      20
+#define       S_READY     26
 
-#define       S_DEPS      26
-#define       S_INTEG     37
+#define       S_DEPS      28
+#define       S_INTEG     39
 
-#define       S_OPER      39
+#define       S_OPER      41
 
 
 
@@ -34,6 +35,7 @@ ymode__check            (char a_abbr, char a_target)
    /*---(locals)-----------+-----+-----+-*/
    char        x_index     =    0;
    char        x_loc       =    0;
+   char        x_exp       =    0;
    char        x_val       =    0;
    /*---(check mode)---------------------*/
    x_index  = ymode_by_abbr (a_abbr);
@@ -44,18 +46,21 @@ ymode__check            (char a_abbr, char a_target)
    /*---(prepare)------------------------*/
    switch (a_target) {
    case 'p' :  x_loc = S_PREP ;  break;
+   case 'f' :  x_loc = S_FUNC ;  break;
    case 'i' :  x_loc = S_INIT ;  break;
    case 'n' :  x_loc = S_BASE ;  break;
    case 'r' :  x_loc = S_READY;  break;
+   case 'd' :  x_loc = S_DEPS ;  break;
    case 'o' :  x_loc = S_OPER ;  break;
    }
    /*---(look-up)------------------------*/
    DEBUG_MODE   yLOG_sint    (x_loc);
+   x_exp = g_modes  [x_index].expect [x_loc];
    x_val = g_actual [x_index] [x_loc];
    /*---(check)--------------------------*/
    DEBUG_MODE   yLOG_schar   (a_target);
    DEBUG_MODE   yLOG_schar   (x_val);
-   if (x_val != a_target) {
+   if (x_exp != '-' && x_val != a_target) {
       DEBUG_MODE   yLOG_snote   ("NOT READY");
       return 0;
    }
@@ -69,7 +74,7 @@ yMODE_check_prep        (char a_abbr)
 {
    char        rc          =    0;
    DEBUG_MODE   yLOG_senter  (__FUNCTION__);
-   rc = ymode__check  (a_abbr, 'p');
+   if (rc == 0)  rc = ymode__check  (a_abbr, 'p');
    DEBUG_MODE   yLOG_sexit   (__FUNCTION__);
    return rc;
 }
@@ -80,6 +85,7 @@ yMODE_check_needs       (char a_abbr)
    char        rc          =    0;
    DEBUG_MODE   yLOG_senter  (__FUNCTION__);
    if (rc == 0)  rc = ymode__check  (a_abbr, 'i');
+   if (rc >  0)  rc = ymode__check  (a_abbr, 'f');
    if (rc >  0)  rc = ymode__check  (a_abbr, 'n');
    DEBUG_MODE   yLOG_sexit   (__FUNCTION__);
    return rc;
@@ -247,7 +253,7 @@ ymode__updating         (char a_target)
       break;
    case 'o' :
       x_loc  = S_PRE;
-      x_len  = 30;
+      x_len  = 40;
       x_mark = S_OPER;
       break;
    }
@@ -320,7 +326,7 @@ ymode__oper_checkall    (void)
 static void  o___STATUS_SETTING__o () { return; }
 
 char
-yMODE_init_set          (char a_abbr)
+yMODE_init_set          (char a_abbr, void *a_handler)
 {
    /*---(design notes)-------------------*/
    /*
@@ -338,8 +344,17 @@ yMODE_init_set          (char a_abbr)
       DEBUG_MODE   yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
-   /*---(update this status)-------------*/
    n = g_last;
+   /*---(check the handler)--------------*/
+   --rce;  if (g_modes [n].expect [S_FUNC] != '-') {
+      if (a_handler == NULL) {
+         DEBUG_MODE   yLOG_exitr   (__FUNCTION__, rce);
+         return rce;
+      }
+      g_handler [n]          = a_handler;
+      g_actual [n] [S_FUNC ] = 'f';
+   }
+   /*---(update this status)-------------*/
    DEBUG_MODE   yLOG_note    ("mark as initialized");
    g_actual [n] [S_INIT ] = 'i';
    /*---(mark others lines)--------------*/
@@ -418,7 +433,7 @@ ymode_status_purge      (void)
    /*---(count status)-------------------*/
    for (i = 0; i < g_nmode; ++i) {
       DEBUG_MODE   yLOG_schar   (g_modes [i].abbr);
-      strlcpy (g_actual [i], "----- - - ----- - ----- - ---------- - -", LEN_DESC);
+      strlcpy (g_actual [i], "----- - - - ----- - ----- - ---------- - -", LEN_DESC);
    }
    /*---(complete)-----------------------*/
    DEBUG_MODE   yLOG_sexit   (__FUNCTION__);
@@ -443,7 +458,7 @@ ymode_status_init       (void)
    /*---(update)-------------------------*/
    ymode_status_purge   ();
    ymode__prep_checkall ();
-   yMODE_init_set       (FMOD_STATUS);
+   yMODE_init_set       (FMOD_STATUS, NULL);
    /*---(complete)-----------------------*/
    DEBUG_MODE   yLOG_exit    (__FUNCTION__);
    return 0;
