@@ -19,6 +19,8 @@ char  (*g_handler [MAX_MODES]) (uchar a_major, uchar a_minor) = { NULL };
 char    g_actual  [MAX_MODES] [LEN_DESC];
 char   *g_mesg    [MAX_MODES] = { NULL };
 
+char    g_keys    [LEN_TERSE] = "·-·-";
+
 
 const tMODE_INFO  g_modes [MAX_MODES] = {
    /*-abbr-------- ---type----- show  -tla- ---terse----- cat  ---expected-status------------------------   ---description--------------------------------------- ---message-------------------------------------------------------------------------------  */
@@ -159,6 +161,8 @@ yMODE_wrap              (void)
    return 0;
 }
 
+char* yMODE_viewkeys          (void) { return g_keys; }
+
 uchar
 yMODE_handle            (uchar a_key)
 {
@@ -212,7 +216,7 @@ yMODE_handle            (uchar a_key)
       /*---(translate unprintable)-------*/
       x_repeat = yKEYS_repeats ();
       DEBUG_USER   yLOG_value   ("x_repeat"  , x_repeat);
-      snprintf (x_keys,   9, " %2x%c%c"  , x_minor, x_major, chrvisible (x_minor));
+      snprintf (g_keys,   9, " %2x%c%c"  , x_minor, chrvisible (x_major), chrvisible (x_minor));
       /*---(loop repeats)----------------*/
       if (rc == 0 && x_repeat > 0 && yMODE_curr () != PMOD_REPEAT) {
          DEBUG_USER   yLOG_note    ("repeating");
@@ -232,6 +236,7 @@ yMODE_handle            (uchar a_key)
    else if (rc >  0)    x_major = rc;
    else {
       x_major = G_KEY_SPACE;
+      yKEYS_error ();
       /*> yvikeys_set_error ();                                                       <*/
       /*> myVIKEYS.trouble = 'y';                                                     <*/
       yKEYS_repeat_reset ();
@@ -241,110 +246,6 @@ yMODE_handle            (uchar a_key)
    DEBUG_LOOP   yLOG_exit    (__FUNCTION__);
    return rc;
 }
-
-uchar        /*-> process main loop keyboard input ---[ leaf   [gc.GD1.132.IM]*/ /*-[05.0000.111.R]-*/ /*-[--.---.---.--]-*/
-yMODE_handle_old        (uchar a_key)
-{
-   /*---(locals)-----------+-----+-----+-*/
-   char        rc          = 0;             /* generic return code            */
-   static char x_major     = ' ';           /* saved keystroke from last loop */
-   static char x_savemode  = '-';           /* to identify mode changes       */
-   int         x_repeat    = 0;             /* store current repeat count     */
-   char        x_nomode    = '-';           /* flag illegal mode              */
-   uchar       x_minor     = ' ';
-   char        x_keys      [LEN_LABEL];
-   /*---(header)-------------------------*/
-   DEBUG_LOOP   yLOG_enter   (__FUNCTION__);
-   DEBUG_LOOP   yLOG_value   ("a_key"     , a_key);
-   /*---(defense)------------------------*/
-   if (a_key == 0) {
-      DEBUG_LOOP   yLOG_exit    (__FUNCTION__);
-      return 0;
-   }
-   DEBUG_LOOP   yLOG_note    ("REAL KEY");
-   /*---(prepare)------------------------*/
-   /*> myVIKEYS.trouble   = '-';                                                      <*/
-   x_minor = chrworking (a_key);
-   DEBUG_LOOP   yLOG_value   ("x_minor"   , x_minor);
-   /*---(handle count)-------------------*/
-   if (yMODE_curr () == PMOD_REPEAT) {
-      rc = yKEYS_repeat_umode (x_major, x_minor);
-      if (rc >  0)  x_major = G_KEY_SPACE;
-   }
-   /*---(main loop)----------------------*/
-   while (1) {
-      DEBUG_LOOP   yLOG_char    ("MODE bef"  , yMODE_curr ());
-      /*---(handle keystroke)------------*/
-      switch (yMODE_curr ()) {
-         /*> case MODE_GOD      : rc = GOD_mode              (x_major , x_minor);  break;   <* 
-          *> case MODE_PROGRESS : rc = PROGRESS_mode         (x_major , x_minor);  break;   <* 
-          *> case MODE_MAP      : rc = yvikeys_map_mode      (x_major , x_minor);  break;   <*/
-
-         /*> case MODE_SOURCE   : rc = SOURCE_mode           (x_major , x_minor);  break;   <* 
-          *> case UMOD_INPUT    : rc = SRC_INPT_umode        (x_major , x_minor);  break;   <* 
-          *> case SMOD_SREG     : rc = yvikeys_sreg_smode    (x_major , x_minor);  break;   <*/
-
-         /*> case UMOD_REPLACE  : rc = SRC_REPL_umode        (x_major , x_minor);  break;   <* 
-          *> case UMOD_SUNDO    : rc = BASE__________stub    (x_major , x_minor);  break;   <* 
-          *> case UMOD_MUNDO    : rc = BASE__________stub    (x_major , x_minor);  break;   <*/
-
-         /*> case MODE_COMMAND  : rc = SOURCE_mode           (x_major , x_minor);  break;   <* 
-          *> case SMOD_HINT     : rc = SOURCE_mode           (x_major , x_minor);  break;   <* 
-          *> case MODE_SEARCH   : rc = SOURCE_mode           (x_major , x_minor);  break;   <*/
-
-         /*> case UMOD_HISTORY  : rc = yvikeys_hist_umode    (x_major , x_minor);  break;   <* 
-          *> case UMOD_VISUAL   : rc = yvikeys_visu_umode    (x_major , x_minor);  break;   <* 
-          *> case SMOD_ERROR    : rc = BASE__________stub    (x_major , x_minor);  break;   <*/
-
-         /*> case XMOD_FORMAT   : rc = FORMAT_xmode          (x_major , x_minor);  break;   <* 
-          *> case XMOD_PALETTE  : rc = PALETTE_xmode         (x_major , x_minor);  break;   <* 
-          *> case XMOD_UNITS    : rc = UNITS_xmode           (x_major , x_minor);  break;   <*/
-
-         /*> case SMOD_BUFFER   : rc = yvikeys_bufs_umode    (x_major , x_minor);  break;   <* 
-          *> case UMOD_WANDER   : rc = yvikeys_map_wander    (x_major , x_minor);  break;   <* 
-          *> case SMOD_MREG     : rc = yvikeys_mreg_smode    (x_major , x_minor);  break;   <*/
-
-         /*> case UMOD_MARK     : rc = yvikeys_mark_smode    (x_major , x_minor);  break;   <* 
-          *> case SMOD_MENUS    : rc = yvikeys_menu_smode    (x_major , x_minor);  break;   <* 
-          *> case SMOD_MACRO    : rc = yvikeys_macro_smode   (x_major , x_minor);  break;   <*/
-
-         /*> case UMOD_SENDKEYS : rc = SENDKEYS_umode        (x_major , x_minor);  break;   <*/
-         /*> case PMOD_REPEAT   :                                                break;   <*/
-      default            : rc = -1;  x_nomode = 'y';                      break;
-      }
-      DEBUG_USER   yLOG_value   ("rc"        , rc);
-      DEBUG_LOOP   yLOG_char    ("MODE aft"  , yMODE_curr ());
-      /*---(translate unprintable)-------*/
-      /*> x_repeat = REPEAT_count ();                                                 <*/
-      DEBUG_USER   yLOG_value   ("x_repeat"  , x_repeat);
-      /*> snprintf (x_keys,   9, "%2d %c%c"  , x_repeat, x_major, chrvisible (x_minor));   <*/
-      snprintf (x_keys,   9, " %2x%c%c"  , x_minor, x_major, chrvisible (x_minor));
-      /*---(loop repeats)----------------*/
-      if (rc == 0 && x_repeat > 0 && yMODE_curr () != PMOD_REPEAT) {
-         DEBUG_USER   yLOG_note    ("repeating");
-         /*> REPEAT_decrement ();                                                     <*/
-         continue;
-      }
-      /*---(loop repeats)----------------*/
-      if (rc <= 0 && yMODE_curr () != PMOD_REPEAT) {
-         DEBUG_USER   yLOG_note    ("complete repeat");
-         yKEYS_repeat_reset ();
-      }
-      break;
-      /*---(done)------------------------*/
-   }
-   /*---(setup for next keystroke)-------*/
-   if      (rc == 0)    x_major = G_KEY_SPACE;
-   else if (rc >  0)    x_major = rc;
-   /*> else               { x_major = G_KEY_SPACE;  yvikeys_set_error ();  myVIKEYS.trouble = 'y';  REPEAT_reset (); }   <*/
-   /*> yvikeys_view_keys (x_keys);                                                    <*/
-   /*---(save current mode)--------------*/
-   x_savemode = yMODE_curr ();
-   /*---(complete)-----------------------*/
-   DEBUG_LOOP   yLOG_exit    (__FUNCTION__);
-   return rc;
-}
-
 
 
 
@@ -446,6 +347,10 @@ ymode_handler_source     (uchar a_major, uchar a_minor)
       break;
    case 'I'  : case 'i'  : case 'a'  : case 'A'  :
       yMODE_enter (UMOD_INPUT);
+      break;
+   case 'q'  : case 'Q'  :
+      return -11;
+      break;
    }
    return 0;
 }

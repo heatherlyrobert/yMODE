@@ -64,6 +64,7 @@ typedef  unsigned char        uchar;
 char*       yMODE_version           (void);
 char        yMODE_init              (char a_mode);
 char        yMODE_wrap              (void);
+char*       yMODE_viewkeys          (void);
 uchar       yMODE_handle            (uchar a_key);
 /*---(control)--------------*/
 char        yMODE_enter             (char a_mode);
