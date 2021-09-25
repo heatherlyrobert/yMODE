@@ -319,6 +319,7 @@ ymode_handler_log       (uchar a_mode, uchar a_key)
 char
 ymode_handler_map        (uchar a_major, uchar a_minor)
 {
+   char        rc          =     0;
    ymode_handler_log ('M', a_minor);
    switch (a_minor) {
    case '¦'  : case G_KEY_RETURN :
@@ -330,13 +331,17 @@ ymode_handler_map        (uchar a_major, uchar a_minor)
    case ':'  :
       yMODE_enter (MODE_COMMAND);
       break;
+   case '@'      : case 'q'      : case 'Q'      :
+      rc = yMACRO_handle_prep (a_major, a_minor);
+      break;
    }
-   return 0;
+   return rc;
 }
 
 char
 ymode_handler_source     (uchar a_major, uchar a_minor)
 {
+   char        rc          =     0;
    ymode_handler_log ('S', a_minor);
    switch (a_minor) {
    case '¦'  : case G_KEY_RETURN :
@@ -348,11 +353,11 @@ ymode_handler_source     (uchar a_major, uchar a_minor)
    case 'I'  : case 'i'  : case 'a'  : case 'A'  :
       yMODE_enter (UMOD_INPUT);
       break;
-   case 'q'  : case 'Q'  :
-      return -11;
+   case CASE_MACRO_KEYS :
+      rc = yMACRO_handle_prep (a_major, a_minor);
       break;
    }
-   return 0;
+   return rc;
 }
 
 char
@@ -385,6 +390,14 @@ ymode_handler_command    (uchar a_major, uchar a_minor)
 }
 
 char
+ymode_handler_macro      (uchar a_major, uchar a_minor)
+{
+   ymode_handler_log ('@', a_minor);
+   yMODE_exit  ();
+   return 0;
+}
+
+char
 yMODE_handler_setup     (void)
 {
    yMODE_init_set (FMOD_FILE    , NULL);
@@ -396,6 +409,8 @@ yMODE_handler_setup     (void)
    yMODE_init_set (MODE_SOURCE  , ymode_handler_source);
    yMODE_conf_set (MODE_SOURCE  , '1');
    yMODE_init_set (UMOD_INPUT   , ymode_handler_input);
+   yMODE_init_set (SMOD_MACRO   , ymode_handler_macro);
+   yMODE_conf_set (SMOD_MACRO   , '1');
    yKEYS_init ();
    return 0;
 }
@@ -410,6 +425,7 @@ yMODE__unit             (char *a_question, int n)
    /*---(preprare)-----------------------*/
    strcpy  (unit_answer, "MODE unit        : question not understood");
    /*---(selection)----------------------*/
+   if (n > 32)  n = ymode_by_abbr (n);
    if      (strcmp (a_question, "stack"        )  == 0) {
       yMODE_status (t);
       snprintf (unit_answer, LEN_FULL, "MODE stack       : %s", t);
