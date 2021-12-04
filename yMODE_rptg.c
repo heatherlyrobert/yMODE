@@ -7,11 +7,21 @@
 char 
 ymode_update            (void)
 {
+   DEBUG_MODE   yLOG_senter  (__FUNCTION__);
+   DEBUG_MODE   yLOG_schar   (g_mode_curr);
    if (strchr (g_majors, g_mode_curr) != NULL) {
-      sprintf (g_text, "[%c ]" , g_mode_curr);
+      DEBUG_MODE   yLOG_snote   ("major");
+      sprintf (g_text, " %c·" , g_mode_curr);
+   } else if (g_mode_depth >= 2) {
+      DEBUG_MODE   yLOG_snote   ("other");
+      sprintf (g_text, " %c%c", g_mode_stack [g_mode_depth - 2], g_mode_curr);
    } else {
-      sprintf (g_text, "[%c%c]", g_mode_stack [g_mode_depth - 2], g_mode_curr);
+      DEBUG_MODE   yLOG_snote   ("early");
+      sprintf (g_text, " %c·" , g_mode_curr);
    }
+   DEBUG_MODE   yLOG_snote   (g_text);
+   DEBUG_MODE   yLOG_sexit   (__FUNCTION__);
+   yVIEW_modes (g_text); /* push update */
    return 0;
 }
 
@@ -20,7 +30,7 @@ char* yMODE_text              (void) { return g_text; }
 
 
 char       /*----: list the current mode stack -------------------------------*/
-yMODE_status            (char *a_list)
+yMODE_status            (char a_size, short a_wide, char *a_list)
 {
    /*---(locals)-----------+-----------+-*/
    char        rce         = -10;
@@ -29,7 +39,7 @@ yMODE_status            (char *a_list)
    /*---(defenses)-----------------------*/
    --rce;  if (a_list  == NULL)  return rce;
    /*---(walk the list)------------------*/
-   sprintf (a_list, "modes (%d)", g_mode_depth);
+   sprintf (a_list, " modes (%d)", g_mode_depth);
    for (i = 0; i < 8; ++i) {
       sprintf (t, " %c", g_mode_stack [i]);
       strlcat (a_list, t, LEN_FULL);
@@ -49,7 +59,7 @@ yMODE_message           (void)
       if (g_modes [i].abbr == '-'   )   break;
       if (g_modes [i].abbr == g_mode_curr)  break;
    }
-   snprintf (g_message, LEN_RECD, "%-3.3s  %s¦", g_modes [i].three, g_modes [i].mesg);
+   snprintf (g_message, LEN_RECD, " %-3.3s  %s¦", g_modes [i].three, g_modes [i].mesg);
    return g_message;
 }
 
@@ -101,6 +111,14 @@ yMODE_statuses          (void *a_file)
    fprintf (a_file, "o     = operational and ready to use\n");
    /*---(complete)-----------------------*/
    return 0;
+}
+
+char*
+yMODE_actual            (char a_abbr)
+{
+   int n = ymode_by_abbr (a_abbr);
+   if (n < 0)  return "not found";
+   return g_actual [n];
 }
 
 

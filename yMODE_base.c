@@ -16,6 +16,7 @@ char    g_text          [LEN_TERSE] = "··";
 
 char   *g_allow   [MAX_MODES] = { NULL };
 char  (*g_handler [MAX_MODES]) (uchar a_major, uchar a_minor) = { NULL };
+char  (*g_prepper [MAX_MODES]) (uchar a_major, uchar a_minor) = { NULL };
 char    g_actual  [MAX_MODES] [LEN_DESC];
 char   *g_mesg    [MAX_MODES] = { NULL };
 
@@ -105,6 +106,7 @@ yMODE_init              (char a_mode)
 {
    /*---(locals)-----------+-----+-----+-*/
    char        rce         =  -10;
+   char        rc          =    0;
    int         i           =    0;
    int         j           =    0;
    char        n           =    0;
@@ -143,10 +145,15 @@ yMODE_init              (char a_mode)
     *> s_uniter    = NULL;                                                            <* 
     *> s_paletter  = NULL;                                                            <*/
    /*---(update status)------------------*/
-   yMODE_init_set   (FMOD_MODE, NULL);
+   yMODE_init_set   (FMOD_MODE, NULL, NULL);
    /*---(go to default mode)-------------*/
-   if (a_mode == MODE_GOD)  yMODE_enter (MODE_GOD);
-   else                     yMODE_enter (MODE_MAP);
+   if (a_mode == MODE_GOD)  rc = ymode_force (MODE_GOD);
+   else                     rc = ymode_force (MODE_MAP);
+   DEBUG_MODE   yLOG_value   ("mode_force", rc);
+   --rce;  if (rc < 0) {
+      DEBUG_MODE   yLOG_exitr   (__FUNCTION__, rce);
+      return rce;
+   }
    /*---(complete)-----------------------*/
    DEBUG_MODE   yLOG_exit    (__FUNCTION__);
    return 0;
@@ -160,8 +167,6 @@ yMODE_wrap              (void)
    ymode_mesg_purge   ();
    return 0;
 }
-
-char* yMODE_viewkeys          (void) { return g_keys; }
 
 uchar
 yMODE_handle            (uchar a_key)
@@ -185,22 +190,39 @@ yMODE_handle            (uchar a_key)
    }
    DEBUG_LOOP   yLOG_note    ("REAL KEY");
    x_minor = chrworking (a_key);
-   DEBUG_LOOP   yLOG_value   ("x_minor"   , x_minor);
+   DEBUG_LOOP   yLOG_char    ("x_minor"   , x_minor);
    /*> myVIKEYS.trouble   = '-';                                                      <*/
    /*---(handle count)-------------------*/
    if (yMODE_curr () == PMOD_REPEAT) {
       rc = yKEYS_repeat_umode (x_major, x_minor);
       if (rc >  0)  x_major = G_KEY_SPACE;
    }
+   if (yMODE_curr () == PMOD_REPEAT) {
+      DEBUG_LOOP   yLOG_exit    (__FUNCTION__);
+      return 0;
+   }
+   /*---(handle grouping)----------------*/
+   if (strchr ("()", x_minor) != NULL) {
+      DEBUG_LOOP   yLOG_complex ("grouping"  , "%c, %3d, %c", yMODE_curr (), x_minor, chrvisible (x_minor));
+      rc = yKEYS_group_hmode (x_major, x_minor);
+      DEBUG_LOOP   yLOG_value   ("group"     , rc);
+      if (rc > 0) {
+         DEBUG_LOOP   yLOG_exit    (__FUNCTION__);
+         return 0;
+      }
+   }
    /*---(mode)---------------------------*/
+   DEBUG_LOOP   yLOG_char    ("mode"      , yMODE_curr ());
    n = ymode_by_abbr (yMODE_curr ());
    --rce;  if (n < 0) {
       yMODE_exit ();
       DEBUG_LOOP   yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
+   DEBUG_LOOP   yLOG_value   ("n"         , n);
    /*---(handler)------------------------*/
    x_handler = g_handler [n];
+   DEBUG_LOOP   yLOG_point   ("x_handler" , x_handler);
    --rce;  if (x_handler == NULL) {
       yMODE_exit ();
       DEBUG_LOOP   yLOG_exitr   (__FUNCTION__, rce);
@@ -211,37 +233,47 @@ yMODE_handle            (uchar a_key)
       /*---(run mode)--------------------*/
       DEBUG_LOOP   yLOG_char    ("MODE bef"  , yMODE_curr ());
       rc = x_handler (x_major, x_minor);
-      DEBUG_USER   yLOG_value   ("rc"        , rc);
+      DEBUG_LOOP   yLOG_value   ("rc"        , rc);
       DEBUG_LOOP   yLOG_char    ("MODE aft"  , yMODE_curr ());
       /*---(translate unprintable)-------*/
+      snprintf (x_keys,   9, "  %c%c", chrvisible (x_major), chrvisible (x_minor));
+      /*---(check repeats)---------------*/
       x_repeat = yKEYS_repeats ();
-      DEBUG_USER   yLOG_value   ("x_repeat"  , x_repeat);
-      snprintf (g_keys,   9, " %2x%c%c"  , x_minor, chrvisible (x_major), chrvisible (x_minor));
+      DEBUG_LOOP   yLOG_value   ("x_repeat"  , x_repeat);
+      /*---(handle returns)--------------*/
+      /*> if        (rc == YKEYS_LOCK) {                                                         <* 
+       *>    DEBUG_LOOP   yLOG_note    ("negative return YKEYS_LOCK, locking all action");       <* 
+       *>    yKEYS_set_lock     ();                                                              <* 
+       *>    yKEYS_repeat_reset ();                                                              <* 
+       *>    break;                                                                              <* 
+       *> } else if (rc == YKEYS_ERROR) {                                                        <* 
+       *>    DEBUG_LOOP   yLOG_note    ("negative return YKEYS_ERROR, error breaking repeat");   <* 
+       *>    yKEYS_set_error    ();                                                              <* 
+       *>    yKEYS_repeat_reset ();                                                              <* 
+       *>    break;                                                                              <* 
+       *> } else if (rc <   0) {                                                                 <* 
+       *>    DEBUG_LOOP   yLOG_note    ("negative return, warning");                             <* 
+       *>    yKEYS_set_warning  ();                                                              <* 
+       *> }                                                                                      <*/
       /*---(loop repeats)----------------*/
-      if (rc == 0 && x_repeat > 0 && yMODE_curr () != PMOD_REPEAT) {
-         DEBUG_USER   yLOG_note    ("repeating");
+      if (rc >= 0 && x_repeat > 0 && yMODE_curr () != PMOD_REPEAT) {
+         DEBUG_LOOP   yLOG_note    ("repeating");
          yKEYS_repeat_dec ();
          continue;
       }
       /*---(loop repeats)----------------*/
-      if (rc <= 0 && yMODE_curr () != PMOD_REPEAT) {
-         DEBUG_USER   yLOG_note    ("complete repeat");
+      if (rc < 0 && yMODE_curr () != PMOD_REPEAT) {
+         DEBUG_LOOP   yLOG_note    ("complete repeat");
          yKEYS_repeat_reset ();
       }
       break;
       /*---(done)------------------------*/
    }
    /*---(setup for next keystroke)-------*/
-   if      (rc == 0)    x_major = G_KEY_SPACE;
-   else if (rc >  0)    x_major = rc;
-   else {
-      x_major = G_KEY_SPACE;
-      yKEYS_error ();
-      /*> yvikeys_set_error ();                                                       <*/
-      /*> myVIKEYS.trouble = 'y';                                                     <*/
-      yKEYS_repeat_reset ();
-   }
-   /*> yvikeys_view_keys (x_keys);                                                    <*/
+   if      (rc >   0)    x_major = rc;
+   else if (rc ==  0)    x_major = G_KEY_SPACE;
+   else                  x_major = G_KEY_SPACE;
+   yVIEW_keys (x_keys);
    /*---(complete)-----------------------*/
    DEBUG_LOOP   yLOG_exit    (__FUNCTION__);
    return rc;
@@ -254,7 +286,9 @@ yMODE_handle            (uchar a_key)
 /*====================------------------------------------====================*/
 static void  o___UNIT_TEST_______o () { return; }
 
-char          unit_answer [LEN_FULL];
+char           unit_answer [LEN_FULL];
+int            s_xpos      = 0;
+int            s_ypos      = 0;
 
 char       /*----: set up program urgents/debugging --------------------------*/
 ymode__unit_quiet       (void)
@@ -292,16 +326,17 @@ ymode__unit_end         (void)
    return 0;
 }
 
-char ymode_handler_stub   (uchar a_major, uchar a_minor) { return 0; }
+char yMODE_handler_stub   (uchar a_major, uchar a_minor) { return 0; }
 
 static char  s_keys [LEN_RECD] = "";
 static char  s_mode [LEN_RECD] = "";
 
 char
-ymode_handler_reset     (void)
+yMODE_handler_reset     (void)
 {
    strlcpy (s_keys, "", LEN_RECD);
    strlcpy (s_mode, "", LEN_RECD);
+   s_xpos = s_ypos = 0;
    return 0;
 }
 
@@ -321,20 +356,43 @@ ymode_handler_map        (uchar a_major, uchar a_minor)
 {
    char        rc          =     0;
    ymode_handler_log ('M', a_minor);
+   DEBUG_MODE   yLOG_enter   (__FUNCTION__);
+   DEBUG_MODE   yLOG_char    ("a_minor"   , a_minor);
    switch (a_minor) {
+   case '1'  : case '2'  : case '3'  : case '4'  :
+   case '5'  : case '6'  : case '7'  : case '8'  :
+   case '9'  : yMODE_enter  (PMOD_REPEAT);
+               rc = a_minor;
+               break;
+   case '0'  : s_xpos  =  0;  break;
+   case 'H'  : s_xpos -=  5;  break;
+   case 'h'  : s_xpos -=  1;  break;
+   case 'l'  : s_xpos +=  1;  break;
+   case 'L'  : s_xpos +=  5;  break;
+   case '$'  : s_xpos  = 99;  break;
+   case '_'  : s_ypos  =  0;  break;
+   case 'K'  : s_ypos -=  5;  break;
+   case 'k'  : s_ypos -=  1;  break;
+   case 'j'  : s_ypos +=  1;  break;
+   case 'J'  : s_ypos +=  5;  break;
+   case '~'  : s_ypos  = 99;  break;
    case '¦'  : case G_KEY_RETURN :
-      yMODE_enter (MODE_SOURCE);
-      yMODE_enter (UMOD_INPUT);
-      break;
+               yMODE_enter (MODE_SOURCE);
+               yMODE_enter (UMOD_INPUT);
+               break;
    case '¥'  : case G_KEY_ESCAPE :
-      break;
+               break;
    case ':'  :
-      yMODE_enter (MODE_COMMAND);
-      break;
-   case '@'      : case 'q'      : case 'Q'      :
-      rc = yMACRO_handle_prep (a_major, a_minor);
-      break;
+               yMODE_enter (MODE_COMMAND);
+               break;
+   case '@'  : case 'q'    : case 'Q'      :
+               rc = yMACRO_hmode (a_major, a_minor);
+               break;
+               /*> case '('  : case ')'  :                                                        <* 
+                *>             rc = yKEYS_group_hmode (a_major, a_minor);                         <* 
+                *>             break;                                                             <*/
    }
+   DEBUG_MODE   yLOG_exit    (__FUNCTION__);
    return rc;
 }
 
@@ -343,7 +401,12 @@ ymode_handler_source     (uchar a_major, uchar a_minor)
 {
    char        rc          =     0;
    ymode_handler_log ('S', a_minor);
+   DEBUG_MODE   yLOG_enter   (__FUNCTION__);
    switch (a_minor) {
+   case '1'  : case '2'  : case '3'  : case '4'  : case '5'  :
+   case '6'  : case '7'  : case '8'  : case '9'  :
+      yMODE_enter (PMOD_REPEAT);
+      break;
    case '¦'  : case G_KEY_RETURN :
       yMODE_exit  ();
       break;
@@ -354,9 +417,13 @@ ymode_handler_source     (uchar a_major, uchar a_minor)
       yMODE_enter (UMOD_INPUT);
       break;
    case CASE_MACRO_KEYS :
-      rc = yMACRO_handle_prep (a_major, a_minor);
+      rc = yMACRO_hmode (a_major, a_minor);
       break;
+      /*> case '('  : case ')'  :                                                        <* 
+       *>    rc = yKEYS_group_hmode (a_major, a_minor);                                  <* 
+       *>    break;                                                                      <*/
    }
+   DEBUG_MODE   yLOG_exit    (__FUNCTION__);
    return rc;
 }
 
@@ -364,6 +431,7 @@ char
 ymode_handler_input      (uchar a_major, uchar a_minor)
 {
    ymode_handler_log ('i', a_minor);
+   DEBUG_MODE   yLOG_enter   (__FUNCTION__);
    switch (a_minor) {
    case '¥'  : case G_KEY_ESCAPE :
       yMODE_exit  ();
@@ -373,19 +441,41 @@ ymode_handler_input      (uchar a_major, uchar a_minor)
       yMODE_exit  ();
       break;
    }
+   DEBUG_MODE   yLOG_exit    (__FUNCTION__);
+   return 0;
+}
+
+static  char s_command [LEN_HUND] = "";
+
+char
+ymode_handler_command_prep (void)
+{
+   strlcpy (s_command, ":", LEN_HUND);
    return 0;
 }
 
 char
 ymode_handler_command    (uchar a_major, uchar a_minor)
 {
+   char        t           [LEN_SHORT] = "";
    ymode_handler_log (':', a_minor);
+   DEBUG_MODE   yLOG_enter   (__FUNCTION__);
    switch (a_minor) {
    case '¦'  : case G_KEY_RETURN :
+      if      (strcmp (":q"     , s_command) == 0)  yKEYS_quit ();
+      else if (strcmp (":qa"    , s_command) == 0)  yKEYS_quit ();
+      else if (strcmp (":wqa"   , s_command) == 0)  yKEYS_quit ();
+      yMODE_exit  ();
+      break;
    case '¥'  : case G_KEY_ESCAPE :
       yMODE_exit  ();
       break;
+   default   :
+      sprintf (t, "%c", a_minor);
+      strlcat (s_command, t, LEN_HUND);
+      break;
    }
+   DEBUG_MODE   yLOG_exit    (__FUNCTION__);
    return 0;
 }
 
@@ -393,25 +483,41 @@ char
 ymode_handler_macro      (uchar a_major, uchar a_minor)
 {
    ymode_handler_log ('@', a_minor);
+   DEBUG_MODE   yLOG_enter   (__FUNCTION__);
    yMODE_exit  ();
+   DEBUG_MODE   yLOG_exit    (__FUNCTION__);
    return 0;
 }
 
 char
 yMODE_handler_setup     (void)
 {
-   yMODE_init_set (FMOD_FILE    , NULL);
-   yMODE_init_set (MODE_COMMAND , ymode_handler_command);
+   DEBUG_MODE   yLOG_enter   (__FUNCTION__);
+   yMODE_handler_reset ();
+   yMODE_init_set (FMOD_FILE    , NULL, NULL);
+   yMODE_init_set (MODE_COMMAND , ymode_handler_command_prep, ymode_handler_command);
    yMODE_conf_set (FMOD_FILE    , '1');
-   yMODE_init_set (FMOD_VIEW    , NULL);
-   yMODE_init_set (MODE_MAP     , ymode_handler_map);
+   yMODE_init_set (FMOD_VIEW    , NULL, NULL);
+   yMODE_init_set (MODE_MAP     , NULL, ymode_handler_map);
    yMODE_conf_set (MODE_MAP     , '1');
-   yMODE_init_set (MODE_SOURCE  , ymode_handler_source);
+   yMODE_init_set (MODE_SOURCE  , NULL, ymode_handler_source);
    yMODE_conf_set (MODE_SOURCE  , '1');
-   yMODE_init_set (UMOD_INPUT   , ymode_handler_input);
-   yMODE_init_set (SMOD_MACRO   , ymode_handler_macro);
+   yMODE_init_set (UMOD_INPUT   , NULL, ymode_handler_input);
+   yMODE_init_set (SMOD_MACRO   , NULL, ymode_handler_macro);
    yMODE_conf_set (SMOD_MACRO   , '1');
+   yMODE_init_set (UMOD_SUNDO   , NULL, yMODE_handler_stub);
+   yMODE_init_set (SMOD_SREG    , NULL, yMODE_handler_stub);
+   DEBUG_PROG   yLOG_info    ("mode"      , yMODE_actual (FMOD_MODE));
+   DEBUG_PROG   yLOG_info    ("status"    , yMODE_actual (FMOD_STATUS));
+   DEBUG_PROG   yLOG_info    ("view"      , yMODE_actual (FMOD_VIEW));
+   DEBUG_PROG   yLOG_info    ("file"      , yMODE_actual (FMOD_FILE));
+   DEBUG_PROG   yLOG_info    ("map"       , yMODE_actual (MODE_MAP));
+   DEBUG_PROG   yLOG_info    ("comand"    , yMODE_actual (MODE_COMMAND));
+   DEBUG_PROG   yLOG_info    ("source"    , yMODE_actual (MODE_SOURCE));
+   DEBUG_PROG   yLOG_info    ("input"     , yMODE_actual (UMOD_INPUT));
+   DEBUG_PROG   yLOG_info    ("macro"     , yMODE_actual (SMOD_MACRO));
    yKEYS_init ();
+   DEBUG_MODE   yLOG_exit    (__FUNCTION__);
    return 0;
 }
 
@@ -427,8 +533,8 @@ yMODE__unit             (char *a_question, int n)
    /*---(selection)----------------------*/
    if (n > 32)  n = ymode_by_abbr (n);
    if      (strcmp (a_question, "stack"        )  == 0) {
-      yMODE_status (t);
-      snprintf (unit_answer, LEN_FULL, "MODE stack       : %s", t);
+      yMODE_status (0, 0, t);
+      snprintf (unit_answer, LEN_FULL, "MODE stack       :%s", t);
    }
    else if (strcmp (a_question, "entry"        )  == 0) {
       if (g_allow [n] == NULL)  strcpy  (r, "åæ");
@@ -445,13 +551,16 @@ yMODE__unit             (char *a_question, int n)
       snprintf (unit_answer, LEN_FULL, "MODE status (%2d) : %c  å%sæ  å%sæ", n, g_modes [n].abbr, g_modes [n].expect, g_actual [n]);
    }
    else if (strcmp (a_question, "text"         )  == 0) {
-      snprintf (unit_answer, LEN_FULL, "MODE text        : %s", g_text);
+      snprintf (unit_answer, LEN_FULL, "MODE text        : å%sæ", g_text);
    }
    else if (strcmp (a_question, "u_modes"      )  == 0) {
       snprintf (unit_answer, LEN_FULL, "MODE u_modes     : å%-.80sæ", s_mode);
    }
    else if (strcmp (a_question, "u_keys"       )  == 0) {
       snprintf (unit_answer, LEN_FULL, "MODE u_keys      : å%-.80sæ", s_keys);
+   }
+   else if (strcmp (a_question, "u_pos"        )  == 0) {
+      snprintf (unit_answer, LEN_FULL, "MODE u_pos       : %3dx, %3dy", s_xpos, s_ypos);
    }
    /*---(complete)-----------------------*/
    return unit_answer;

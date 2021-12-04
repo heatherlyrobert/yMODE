@@ -36,8 +36,8 @@
 
 #define     P_VERMAJOR  "2.--, clean, improve, and expand"
 #define     P_VERMINOR  "2.0-, separated into independent library"
-#define     P_VERNUM    "2.0j"
-#define     P_VERTXT    "added to test handlers to improve yMACRO and its test"
+#define     P_VERNUM    "2.0k"
+#define     P_VERTXT    "small tweaks to keep up with evolving vi-keys"
 
 #define     P_PRIORITY  "direct, simple, brief, vigorous, and lucid (h.w. fowler)"
 #define     P_PRINCIPAL "[grow a set] and build your wings on the way down (r. bradbury)"
@@ -49,12 +49,14 @@
 #include    <stdio.h>             /* clibc  standard input/output             */
 #include    <stdlib.h>            /* clibc  standard general purpose          */
 #include    <string.h>            /* clibc  standard string handling          */
-/*---(custom)----------------------------*/
+/*---(custom core)-----------------------*/
 #include    <yURG.h>              /* heatherly urgent processing              */
 #include    <yLOG.h>              /* heatherly program logging                */
 #include    <ySTR.h>              /* heatherly string processing              */
-#include    <yKEYS.h>             /* heatherly yVIKEYS key handling           */
-#include    <yMACRO.h>            /* heatherly yVIKEYS macro processing       */
+/*---(custom vi-keys)--------------------*/
+#include    <yKEYS.h>             /* heatherly vi-keys key handling           */
+#include    <yVIEW.h>             /* heatherly vi-keys view management        */
+#include    <yMACRO.h>            /* heatherly vi-keys macro processing       */
 
 
 
@@ -82,6 +84,7 @@ extern int         g_nmode;
 extern char        g_majors  [MAX_MODES];
 
 extern char      (*g_handler [MAX_MODES]) (uchar a_major, uchar a_minor);
+extern char      (*g_prepper [MAX_MODES]) (uchar a_major, uchar a_minor);
 extern char       *g_allow   [MAX_MODES];
 extern char        g_actual  [MAX_MODES] [LEN_DESC];
 extern char       *g_mesg    [MAX_MODES];
@@ -130,12 +133,12 @@ uchar       yMODE_handle            (uchar a_key);
 char        ymode__unit_quiet       (void);
 char        ymode__unit_loud        (void);
 char        ymode__unit_end         (void);
-char        ymode_handler_stub      (uchar a_major, uchar a_minor);
+char        yMODE_handler_stub      (uchar a_major, uchar a_minor);
 char        ymode_handler_map       (uchar a_major, uchar a_minor);
 char        ymode_handler_source    (uchar a_major, uchar a_minor);
 char        ymode_handler_input     (uchar a_major, uchar a_minor);
 char        ymode_handler_command   (uchar a_major, uchar a_minor);
-char        ymode_handler_reset     (void);
+char        yMODE_handler_reset     (void);
 char        ymode_handler_log       (uchar a_mode, uchar a_key);
 char        yMODE_hander_setup      (void);
 char*       yMODE__unit             (char *a_question, int n);
@@ -143,7 +146,9 @@ char*       yMODE__unit             (char *a_question, int n);
 
 /*===[[ yMACRO_control.c ]]===================================================*/
 /*345678901-12345678901-12345678901-12345678901-12345678901-12345678901-123456*/
+char        ymode__enter            (char a_force, char a_mode);
 char        yMODE_enter             (char a_mode);
+char        ymode_force             (char a_mode);
 char        yMODE_exit              (void);
 char        yMODE_curr              (void);
 char        yMODE_prev              (void);
@@ -155,7 +160,7 @@ char        yMODE_not               (char a_mode);
 char        ymode_update            (void);
 char*       yMODE_text              (void);
 char*       yMODE_message           (void);
-char        yMODE_status            (char *a_list);
+char        yMODE_status            (char a_size, short a_wide, char *a_list);
 
 
 /*===[[ yMACRO_status.c ]]====================================================*/
@@ -173,7 +178,7 @@ char        ymode__updating         (char a_target);
 char        ymode__prep_checkall    (void);
 char        ymode__need_checkall    (void);
 char        ymode__deps_checkall    (void);
-char        yMODE_init_set          (char a_abbr, void *a_handler);
+char        yMODE_init_set          (char a_abbr, void *a_prepper, void *a_handler);
 char        yMODE_conf_set          (char a_abbr, char a_step);
 char        ymode_status_purge      (void);
 char        ymode_status_init       (void);

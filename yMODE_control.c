@@ -54,22 +54,26 @@ ymode_by_abbr           (char a_abbr)
 static void  o___MODE_STACK______o () { return; }
 
 char         /*--> add a mode to the stack ---------------[--------[--------]-*/
-yMODE_enter             (char a_mode)
+ymode__enter            (char a_force, char a_mode)
 {
-   /*---(locals)-----------+-----------+-*/
-   char        rce         = -10;
-   int         i           = 0;
-   char        x_mode      = '-';
-   int         x_index     = -1;
+   /*---(locals)-----------+-----+-----+-*/
+   char        rce         =  -10;
+   char        rc          =    0;
+   int         i           =    0;
+   int         n           =    0;
+   char        x_mode      =  '-';
+   int         x_index     =   -1;
+   char      (*x_prepper) (void)       = NULL;
    /*---(header)-------------------------*/
    DEBUG_MODE   yLOG_enter   (__FUNCTION__);
    /*---(check for dup)------------------*/
-   /*> if (g_mode_stack [g_mode_depth] == a_mode)  return 1;                            <*/
+   if (g_mode_stack [g_mode_depth] == a_mode)  return 1;
    /*---(validate mode)------------------*/
    DEBUG_MODE   yLOG_char    ("a_mode"    , a_mode);
    for (i = 0; i < MAX_MODES; ++i) {
       if (g_modes [i].abbr == '-'    )  break;
       if (g_modes [i].abbr != a_mode )  continue;
+      n       = i;
       x_mode  = a_mode;
    }
    DEBUG_MODE   yLOG_char    ("x_mode"    , x_mode);
@@ -98,6 +102,22 @@ yMODE_enter             (char a_mode)
       }
    }
    DEBUG_MODE   yLOG_value   ("x_index"   , x_index);
+   /*---(check if ready)-----------------*/
+   --rce;  if (a_force != 'y' && !yMODE_operational (a_mode)) {
+      DEBUG_MODE   yLOG_exitr   (__FUNCTION__, rce);
+      return rce;
+   }
+   /*---(run prepper)--------------------*/
+   x_prepper = g_prepper [n];
+   DEBUG_MODE   yLOG_point   ("x_prepper" , x_prepper);
+   --rce;  if (x_prepper != NULL) {
+      rc = x_prepper ();
+      DEBUG_MODE   yLOG_value   ("prepper"   , rc);
+      if (rc < 0) {
+         DEBUG_MODE   yLOG_exitr   (__FUNCTION__, rce);
+         return rce;
+      }
+   }
    /*---(add mode)-----------------------*/
    --rce;  if (g_mode_depth >= MAX_STACK) {
       DEBUG_MODE   yLOG_exitr   (__FUNCTION__, rce);
@@ -114,6 +134,9 @@ yMODE_enter             (char a_mode)
    DEBUG_MODE   yLOG_exit    (__FUNCTION__);
    return 0;
 }
+
+char  yMODE_enter   (char a_mode)  { return ymode__enter ('-', a_mode); }
+char  ymode_force   (char a_mode)  { return ymode__enter ('y', a_mode); }
 
 char
 yMODE_exit              (void)

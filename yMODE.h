@@ -22,6 +22,7 @@ typedef  unsigned char        uchar;
 #define     MODE_SEARCH    '/'
 #define     MODES_ONELINE  "S:/;"
 #define     MODES_EDITING  "S:/;triw"
+#define     MODES_GROUPING "GOPMS9"
 /*---(sub-modes)-------------------------*/
 #define     SMOD_ERROR     'e'    /* error reporting and actions              */
 #define     SMOD_MREG      'R'    /* register actions                         */
@@ -64,7 +65,6 @@ typedef  unsigned char        uchar;
 char*       yMODE_version           (void);
 char        yMODE_init              (char a_mode);
 char        yMODE_wrap              (void);
-char*       yMODE_viewkeys          (void);
 uchar       yMODE_handle            (uchar a_key);
 /*---(control)--------------*/
 char        yMODE_enter             (char a_mode);
@@ -78,21 +78,24 @@ char        yMODE_set_allow         (char a_abbr, char *a_allow);
 char        yMODE_get_message       (char a_abbr, char *a_mesg);
 char        yMODE_set_message       (char a_abbr, char *a_mesg);
 /*---(rptg)-----------------*/
-char        yMODE_status            (char *a_list);
+char        yMODE_status            (char a_size, short a_wide, char *a_list);
 char*       yMODE_update            (void);
 char*       yMODE_text              (void);
 char*       yMODE_message           (void);
 char        yMODE_statuses          (void *a_file);
+char*       yMODE_actual            (char a_abbr);
 /*---(status)---------------*/
 char        yMODE_check_prep        (char a_abbr);
 char        yMODE_check_needs       (char a_abbr);
 char        yMODE_operational       (char a_abbr);
-char        yMODE_init_set          (char a_abbr, void *a_handler);
+char        yMODE_init_set          (char a_abbr, void *a_prepper, void *a_handler);
 char        yMODE_conf_set          (char a_abbr, char a_step);
 /*---(done)-----------------*/
+char        yMODE_handler_reset     (void);
 char        yMODE_handler_setup     (void);
 char*       yMODE__unit             (char *a_question, int n);
 
+char        yMODE_handler_stub      (uchar a_major, uchar a_minor);
 
 #endif
 /*============================----end-of-source---============================*/
