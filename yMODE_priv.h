@@ -35,9 +35,9 @@
 #define     P_CREATED   ""
 
 #define     P_VERMAJOR  "2.--, clean, improve, and expand"
-#define     P_VERMINOR  "2.0-, separated into independent library"
-#define     P_VERNUM    "2.0l"
-#define     P_VERTXT    "updated with gyges testing and changes to other libraries"
+#define     P_VERMINOR  "2.1-, converted to SSH access and continue"
+#define     P_VERNUM    "2.1a"
+#define     P_VERTXT    "integrated multi-key repeating into yKEYS and ySRC"
 
 #define     P_PRIORITY  "direct, simple, brief, vigorous, and lucid (h.w. fowler)"
 #define     P_PRINCIPAL "[grow a set] and build your wings on the way down (r. bradbury)"
@@ -57,6 +57,8 @@
 #include    <yKEYS.h>             /* heatherly vi-keys key handling           */
 #include    <yVIEW.h>             /* heatherly vi-keys view management        */
 #include    <yMACRO.h>            /* heatherly vi-keys macro processing       */
+#include    <yFILE.h>             /* heatherly vi-keys content file handling  */
+#include    <yMAP.h>
 
 
 
@@ -75,8 +77,9 @@ struct cMODE_INFO {
    /*---(status)------------*/
    cchar       expect      [LEN_DESC]; /* expected prep and setup             */
    /*---(message)-----------*/
-   cchar       desc        [LEN_DESC]; /* description of mode                 */
+   cchar       desc        [LEN_HUND]; /* description of mode                 */
    cchar       mesg        [LEN_HUND];;/* informative message for display     */
+   cchar       who         [LEN_LABEL]; /* which library provides service     */
    /*---(done)--------------*/
 };
 extern const tMODE_INFO  g_modes   [MAX_MODES];
@@ -101,6 +104,14 @@ extern char       *g_mesg    [MAX_MODES];
 #define       MODE_MICRO    'u'
 #define       MODE_EXTERN   'x'
 #define       MODE_NOT      '-'
+
+typedef    struct    cMY    tMY;
+struct cMY {
+   char      (*e_format)   (uchar a_type, uchar a_how, ushort u, ushort x, ushort y, ushort z);
+   char      (*e_object)   (uchar a_type, uchar a_how, ushort u, ushort x, ushort y, ushort z);
+   char      (*e_palette)  (uchar a_major, uchar a_minor);
+};
+extern tMY         myMODE;
 
 
 #define     MAX_STACK   50
@@ -129,7 +140,7 @@ char        yMODE_set_message       (char a_abbr, char *a_mesg);
 char*       yMODE_version           (void);
 char        yMODE_init              (char a_mode);
 char        yMODE_wrap              (void);
-uchar       yMODE_handle            (uchar a_key);
+char        yMODE_handle            (uchar a_key);
 char        ymode__unit_quiet       (void);
 char        ymode__unit_loud        (void);
 char        ymode__unit_end         (void);
@@ -161,6 +172,7 @@ char        ymode_update            (void);
 char*       yMODE_text              (void);
 char*       yMODE_message           (void);
 char        yMODE_status            (char a_size, short a_wide, char *a_list);
+char        ymode_dump              (FILE *f);
 
 
 /*===[[ yMACRO_status.c ]]====================================================*/
@@ -183,6 +195,14 @@ char        yMODE_conf_set          (char a_abbr, char a_step);
 char        ymode_status_purge      (void);
 char        ymode_status_init       (void);
 /*> char        yMODE_statuses          (FILE *a_file);                               <*/
+
+char        ymode_format_xmode      (uchar a_major, uchar a_minor);
+char        ymode_units_xmode       (uchar a_major, uchar a_minor);
+char        ymode_object_xmode      (uchar a_major, uchar a_minor);
+char        ymode_palette_xmode     (uchar a_major, uchar a_minor);
+
+char        ymode__cust_by_unit     (char a_abbr);
+char        ymode__cust_by_format   (char a_abbr);
 
 
 #endif

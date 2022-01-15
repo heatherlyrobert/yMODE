@@ -40,7 +40,7 @@ ymode__check            (char a_abbr, char a_target)
    /*---(check mode)---------------------*/
    x_index  = ymode_by_abbr (a_abbr);
    if (x_index < 0)  {
-      DEBUG_MODE   yLOG_snote   ("mode not found");
+      DEBUG_YMODE   yLOG_snote   ("mode not found");
       return 0;
    }
    /*---(prepare)------------------------*/
@@ -54,17 +54,17 @@ ymode__check            (char a_abbr, char a_target)
    case 'o' :  x_loc = S_OPER ;  break;
    }
    /*---(look-up)------------------------*/
-   DEBUG_MODE   yLOG_value   ("x_loc"     , x_loc);
+   DEBUG_YMODE   yLOG_value   ("x_loc"     , x_loc);
    x_exp = g_modes  [x_index].expect [x_loc];
    x_val = g_actual [x_index] [x_loc];
    /*---(check)--------------------------*/
-   DEBUG_MODE   yLOG_char    ("a_target"  , a_target);
-   DEBUG_MODE   yLOG_char    ("a_val"     , x_val);
+   DEBUG_YMODE   yLOG_char    ("a_target"  , a_target);
+   DEBUG_YMODE   yLOG_char    ("a_val"     , x_val);
    if (x_exp != '-' && x_val != a_target) {
-      DEBUG_MODE   yLOG_note    ("NOT READY");
+      DEBUG_YMODE   yLOG_note    ("NOT READY");
       return 0;
    }
-   DEBUG_MODE   yLOG_note    ("ready");
+   DEBUG_YMODE   yLOG_note    ("ready");
    /*---(complete)-----------------------*/
    return 1;
 }
@@ -73,9 +73,9 @@ char
 yMODE_check_prep        (char a_abbr)
 {
    char        rc          =    0;
-   DEBUG_MODE   yLOG_enter   (__FUNCTION__);
+   DEBUG_YMODE   yLOG_enter   (__FUNCTION__);
    if (rc == 0)  rc = ymode__check  (a_abbr, 'p');
-   DEBUG_MODE   yLOG_exit    (__FUNCTION__);
+   DEBUG_YMODE   yLOG_exit    (__FUNCTION__);
    return rc;
 }
 
@@ -83,11 +83,11 @@ char
 yMODE_check_needs       (char a_abbr)
 {
    char        rc          =    0;
-   DEBUG_MODE   yLOG_enter   (__FUNCTION__);
+   DEBUG_YMODE   yLOG_enter   (__FUNCTION__);
    if (rc == 0)  rc = ymode__check  (a_abbr, 'i');
    if (rc >  0)  rc = ymode__check  (a_abbr, 'f');
    if (rc >  0)  rc = ymode__check  (a_abbr, 'n');
-   DEBUG_MODE   yLOG_exit    (__FUNCTION__);
+   DEBUG_YMODE   yLOG_exit    (__FUNCTION__);
    return rc;
 }
 
@@ -95,9 +95,9 @@ char
 yMODE_operational       (char a_abbr)
 {
    char        rc          =    0;
-   DEBUG_MODE   yLOG_enter   (__FUNCTION__);
+   DEBUG_YMODE   yLOG_enter   (__FUNCTION__);
    rc = ymode__check  (a_abbr, 'o');
-   DEBUG_MODE   yLOG_exit    (__FUNCTION__);
+   DEBUG_YMODE   yLOG_exit    (__FUNCTION__);
    return rc;
 }
 
@@ -145,11 +145,11 @@ ymode__filling          (char a_abbr, char a_target)
          if (g_modes [n].expect [x_loc + i] != a_abbr)    continue;
          g_actual [n] [x_loc + i] = a_abbr;
          ++c;
-         DEBUG_MODE   yLOG_char    ("abbr"      , g_modes [n].abbr);
+         DEBUG_YMODE   yLOG_char    ("abbr"      , g_modes [n].abbr);
       }
    }
-   DEBUG_MODE   yLOG_note    ("complete");
-   DEBUG_MODE   yLOG_value   ("c"         , c);
+   DEBUG_YMODE   yLOG_note    ("complete");
+   DEBUG_YMODE   yLOG_value   ("c"         , c);
    /*---(complete)-----------------------*/
    return c;
 }
@@ -158,9 +158,9 @@ char
 ymode__prep_fill        (char a_abbr)
 {
    char        rc          =    0;
-   DEBUG_MODE   yLOG_enter   (__FUNCTION__);
+   DEBUG_YMODE   yLOG_enter   (__FUNCTION__);
    rc = ymode__filling  (a_abbr, 'p');
-   DEBUG_MODE   yLOG_exit    (__FUNCTION__);
+   DEBUG_YMODE   yLOG_exit    (__FUNCTION__);
    return rc;
 }
 
@@ -168,9 +168,9 @@ char
 ymode__need_fill        (char a_abbr)
 {
    char        rc          =    0;
-   DEBUG_MODE   yLOG_enter   (__FUNCTION__);
+   DEBUG_YMODE   yLOG_enter   (__FUNCTION__);
    rc = ymode__filling  (a_abbr, 'n');
-   DEBUG_MODE   yLOG_exit    (__FUNCTION__);
+   DEBUG_YMODE   yLOG_exit    (__FUNCTION__);
    return rc;
 }
 
@@ -178,9 +178,9 @@ char
 ymode__deps_fill        (char a_abbr)
 {
    char        rc          =    0;
-   DEBUG_MODE   yLOG_enter   (__FUNCTION__);
+   DEBUG_YMODE   yLOG_enter   (__FUNCTION__);
    rc = ymode__filling  (a_abbr, 'd');
-   DEBUG_MODE   yLOG_exit    (__FUNCTION__);
+   DEBUG_YMODE   yLOG_exit    (__FUNCTION__);
    return rc;
 }
 
@@ -199,19 +199,19 @@ ymode__conf_verify      (void)
    char        x_actual    [LEN_LABEL] = "";
    char        x_expect    [LEN_LABEL] = "";
    /*---(header)-------------------------*/
-   DEBUG_MODE   yLOG_senter  (__FUNCTION__);
+   DEBUG_YMODE   yLOG_senter  (__FUNCTION__);
    /*---(check ready)--------------------*/
    n = g_last;
    strlcpy (x_expect, g_modes [n].expect + S_CONF, 5);
    strlcpy (x_actual, g_actual [n] + S_CONF, 5);
    if (strcmp (x_expect, x_actual) == 0) {
       g_actual [n] [S_READY] = 'r';
-      DEBUG_MODE   yLOG_snote   ("marked ready, COMPLETE");
+      DEBUG_YMODE   yLOG_snote   ("marked ready, COMPLETE");
    } else {
-      DEBUG_MODE   yLOG_snote   ("config not complete");
+      DEBUG_YMODE   yLOG_snote   ("config not complete");
    }
    /*---(complete)-----------------------*/
-   DEBUG_MODE   yLOG_sexit   (__FUNCTION__);
+   DEBUG_YMODE   yLOG_sexit   (__FUNCTION__);
    return 0;
 }
 
@@ -269,11 +269,11 @@ ymode__updating         (char a_target)
       g_actual [n] [x_mark] = a_target;
       ++c;
       ++t;
-      DEBUG_MODE   yLOG_char    ("abbr"      , g_modes [n].abbr);
+      DEBUG_YMODE   yLOG_char    ("abbr"      , g_modes [n].abbr);
    }
-   DEBUG_MODE   yLOG_note    ("complete");
-   DEBUG_MODE   yLOG_value   ("c"         , c);
-   DEBUG_MODE   yLOG_value   ("t"         , t);
+   DEBUG_YMODE   yLOG_note    ("complete");
+   DEBUG_YMODE   yLOG_value   ("c"         , c);
+   DEBUG_YMODE   yLOG_value   ("t"         , t);
    /*---(complete)-----------------------*/
    return 0;
 }
@@ -282,9 +282,9 @@ char
 ymode__prep_checkall    (void)
 {
    char        rc          =    0;
-   DEBUG_MODE   yLOG_enter   (__FUNCTION__);
+   DEBUG_YMODE   yLOG_enter   (__FUNCTION__);
    rc = ymode__updating  ('p');
-   DEBUG_MODE   yLOG_exit    (__FUNCTION__);
+   DEBUG_YMODE   yLOG_exit    (__FUNCTION__);
    return rc;
 }
 
@@ -292,9 +292,9 @@ char
 ymode__need_checkall    (void)
 {
    char        rc          =    0;
-   DEBUG_MODE   yLOG_enter   (__FUNCTION__);
+   DEBUG_YMODE   yLOG_enter   (__FUNCTION__);
    rc = ymode__updating  ('n');
-   DEBUG_MODE   yLOG_exit    (__FUNCTION__);
+   DEBUG_YMODE   yLOG_exit    (__FUNCTION__);
    return rc;
 }
 
@@ -302,9 +302,9 @@ char
 ymode__deps_checkall    (void)
 {
    char        rc          =    0;
-   DEBUG_MODE   yLOG_enter   (__FUNCTION__);
+   DEBUG_YMODE   yLOG_enter   (__FUNCTION__);
    rc = ymode__updating  ('d');
-   DEBUG_MODE   yLOG_exit    (__FUNCTION__);
+   DEBUG_YMODE   yLOG_exit    (__FUNCTION__);
    return rc;
 }
 
@@ -312,9 +312,9 @@ char
 ymode__oper_checkall    (void)
 {
    char        rc          =    0;
-   DEBUG_MODE   yLOG_enter   (__FUNCTION__);
+   DEBUG_YMODE   yLOG_enter   (__FUNCTION__);
    rc = ymode__updating  ('o');
-   DEBUG_MODE   yLOG_exit    (__FUNCTION__);
+   DEBUG_YMODE   yLOG_exit    (__FUNCTION__);
    return rc;
 }
 
@@ -337,19 +337,19 @@ yMODE_init_set          (char a_abbr, void *a_prepper, void *a_handler)
    char        rc          =    0;
    int         n           =   -1;
    /*---(header)-------------------------*/
-   DEBUG_MODE   yLOG_enter   (__FUNCTION__);
-   DEBUG_MODE   yLOG_char    ("a_abbr"    , a_abbr);
+   DEBUG_YMODE   yLOG_enter   (__FUNCTION__);
+   DEBUG_YMODE   yLOG_char    ("a_abbr"    , a_abbr);
    /*---(ready)--------------------------*/
    rc = yMODE_check_prep (a_abbr);
    --rce;  if (rc == 0) {
-      DEBUG_MODE   yLOG_exitr   (__FUNCTION__, rce);
+      DEBUG_YMODE   yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
    n = g_last;
    /*---(check the handler)--------------*/
    --rce;  if (g_modes [n].expect [S_FUNC] != '-') {
       if (a_handler == NULL) {
-         DEBUG_MODE   yLOG_exitr   (__FUNCTION__, rce);
+         DEBUG_YMODE   yLOG_exitr   (__FUNCTION__, rce);
          return rce;
       }
       g_handler [n]           = a_handler;
@@ -357,7 +357,7 @@ yMODE_init_set          (char a_abbr, void *a_prepper, void *a_handler)
       g_actual  [n] [S_FUNC ] = 'f';
    }
    /*---(update this status)-------------*/
-   DEBUG_MODE   yLOG_note    ("mark as initialized");
+   DEBUG_YMODE   yLOG_note    ("mark as initialized");
    g_actual [n] [S_INIT ] = 'i';
    /*---(mark others lines)--------------*/
    ymode__prep_fill       (a_abbr);
@@ -368,8 +368,12 @@ yMODE_init_set          (char a_abbr, void *a_prepper, void *a_handler)
    ymode__deps_fill       (a_abbr);
    ymode__deps_checkall   ();
    ymode__oper_checkall   ();
+   /*---(other updates)------------------*/
+   if (a_abbr == FMOD_FILE) {
+      yFILE_dump_add ("modes"     , "", "inventory of mode statuses"  , ymode_dump        );
+   }
    /*---(complete)-----------------------*/
-   DEBUG_MODE   yLOG_exit    (__FUNCTION__);
+   DEBUG_YMODE   yLOG_exit    (__FUNCTION__);
    return 0;
 }
 
@@ -385,24 +389,24 @@ yMODE_conf_set          (char a_abbr, char a_step)
    char        rc          =    0;
    int         n           =   -1;
    /*---(header)-------------------------*/
-   DEBUG_MODE   yLOG_enter   (__FUNCTION__);
-   DEBUG_MODE   yLOG_char    ("a_abbr"    , a_abbr);
+   DEBUG_YMODE   yLOG_enter   (__FUNCTION__);
+   DEBUG_YMODE   yLOG_char    ("a_abbr"    , a_abbr);
    /*---(ready)--------------------------*/
    rc = yMODE_check_needs (a_abbr);
    --rce;  if (rc == 0) {
-      DEBUG_MODE   yLOG_exitr   (__FUNCTION__, rce);
+      DEBUG_YMODE   yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
    --rce;  if (a_step == 0 || strchr (YSTR_NUMBER, a_step) == NULL) {
-      DEBUG_MODE   yLOG_exitr   (__FUNCTION__, rce);
+      DEBUG_YMODE   yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
    n = g_last;
-   DEBUG_MODE   yLOG_char    ("a_step"    , a_step);
-   DEBUG_MODE   yLOG_char    ("actual"    , g_actual [n]       [S_CONF + a_step - '1']);
-   DEBUG_MODE   yLOG_char    ("expect"    , g_modes [n].expect [S_CONF + a_step - '1']);
+   DEBUG_YMODE   yLOG_char    ("a_step"    , a_step);
+   DEBUG_YMODE   yLOG_char    ("actual"    , g_actual [n]       [S_CONF + a_step - '1']);
+   DEBUG_YMODE   yLOG_char    ("expect"    , g_modes [n].expect [S_CONF + a_step - '1']);
    --rce;  if (g_modes [n].expect [S_CONF + a_step - '1'] != a_step) {
-      DEBUG_MODE   yLOG_exitr   (__FUNCTION__, rce);
+      DEBUG_YMODE   yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
    /*---(ready)--------------------------*/
@@ -415,7 +419,7 @@ yMODE_conf_set          (char a_abbr, char a_step)
    ymode__deps_checkall   ();
    ymode__oper_checkall   ();
    /*---(complete)-----------------------*/
-   DEBUG_MODE   yLOG_exit    (__FUNCTION__);
+   DEBUG_YMODE   yLOG_exit    (__FUNCTION__);
    return 0;
 }
 
@@ -432,14 +436,14 @@ ymode_status_purge      (void)
    /*---(locals)-----------+-----+-----+-*/
    int         i           =    0;
    /*---(header)-------------------------*/
-   DEBUG_MODE   yLOG_senter  (__FUNCTION__);
+   DEBUG_YMODE   yLOG_senter  (__FUNCTION__);
    /*---(count status)-------------------*/
    for (i = 0; i < g_nmode; ++i) {
-      DEBUG_MODE   yLOG_schar   (g_modes [i].abbr);
+      DEBUG_YMODE   yLOG_schar   (g_modes [i].abbr);
       strlcpy (g_actual [i], "----- - - - ----- - ----- - ---------- - -", LEN_DESC);
    }
    /*---(complete)-----------------------*/
-   DEBUG_MODE   yLOG_sexit   (__FUNCTION__);
+   DEBUG_YMODE   yLOG_sexit   (__FUNCTION__);
    return 0;
 }
 
@@ -449,7 +453,7 @@ ymode_status_init       (void)
    /*---(locals)-----------+-----+-----+-*/
    int         i           =    0;
    /*---(header)-------------------------*/
-   DEBUG_MODE   yLOG_enter   (__FUNCTION__);
+   DEBUG_YMODE   yLOG_enter   (__FUNCTION__);
    /*---(count status)-------------------*/
    g_nmode = 0;
    for (i = 0; i < MAX_MODES; ++i) {
@@ -457,12 +461,12 @@ ymode_status_init       (void)
       if (g_modes [i].abbr == '-')  break;
       ++g_nmode;
    }
-   DEBUG_MODE   yLOG_value   ("g_nmode" , g_nmode);
+   DEBUG_YMODE   yLOG_value   ("g_nmode" , g_nmode);
    /*---(update)-------------------------*/
    ymode_status_purge   ();
    ymode__prep_checkall ();
    yMODE_init_set       (FMOD_STATUS, NULL, NULL);
    /*---(complete)-----------------------*/
-   DEBUG_MODE   yLOG_exit    (__FUNCTION__);
+   DEBUG_YMODE   yLOG_exit    (__FUNCTION__);
    return 0;
 }

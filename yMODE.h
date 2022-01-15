@@ -10,6 +10,7 @@ typedef  unsigned char        uchar;
 #define     FMOD_STATUS    '5'
 #define     FMOD_FILE      'f'
 #define     FMOD_MODE      '0'
+#define     FMOD_KEYS      'L'
 #define     FMOD_VIEW      'V'
 #define     MODE_NONE      '-'
 /*---(major modes)-----------------------*/
@@ -27,13 +28,13 @@ typedef  unsigned char        uchar;
 #define     SMOD_ERROR     'e'    /* error reporting and actions              */
 #define     SMOD_MREG      'R'    /* register actions                         */
 #define     SMOD_SREG      't'    /* text register actions                    */
-#define     SMOD_BUFFER    ','    /* selecting buffers                        */
 #define     SMOD_HINT      ';'    /* hint labels                              */
 #define     SMOD_TAGS      '+'    /* grouping tags                            */
 #define     SMOD_MACRO     '@'    /* macro processing                         */
 #define     SMOD_MENUS     'g'    /* show menu system (gui)                   */
 #define     SMOD_FILTER    '!'    /* data filtering                           */
 /*---(micro-modes)-----------------------*/
+#define     UMOD_UNIVERSE  ','    /* selecting universes, tabs, buffers       */
 #define     UMOD_SUNDO     'u'    /* incremental text change undo/redo        */
 #define     UMOD_MUNDO     'm'    /* incremental map change undo/redo         */
 #define     UMOD_HISTORY   'H'    /* dislay command/search history            */
@@ -64,8 +65,9 @@ typedef  unsigned char        uchar;
 /*---(base)-----------------*/
 char*       yMODE_version           (void);
 char        yMODE_init              (char a_mode);
+char        yMODE_formatter         (void *a_formatter, void *a_uniter, void *a_objecter, void *a_paletter);
 char        yMODE_wrap              (void);
-uchar       yMODE_handle            (uchar a_key);
+char        yMODE_handle            (uchar a_key);
 /*---(control)--------------*/
 char        yMODE_enter             (char a_mode);
 char        yMODE_exit              (void);

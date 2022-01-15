@@ -7,20 +7,20 @@
 char 
 ymode_update            (void)
 {
-   DEBUG_MODE   yLOG_senter  (__FUNCTION__);
-   DEBUG_MODE   yLOG_schar   (g_mode_curr);
+   DEBUG_YMODE   yLOG_senter  (__FUNCTION__);
+   DEBUG_YMODE   yLOG_schar   (g_mode_curr);
    if (strchr (g_majors, g_mode_curr) != NULL) {
-      DEBUG_MODE   yLOG_snote   ("major");
+      DEBUG_YMODE   yLOG_snote   ("major");
       sprintf (g_text, " %c·" , g_mode_curr);
    } else if (g_mode_depth >= 2) {
-      DEBUG_MODE   yLOG_snote   ("other");
+      DEBUG_YMODE   yLOG_snote   ("other");
       sprintf (g_text, " %c%c", g_mode_stack [g_mode_depth - 2], g_mode_curr);
    } else {
-      DEBUG_MODE   yLOG_snote   ("early");
+      DEBUG_YMODE   yLOG_snote   ("early");
       sprintf (g_text, " %c·" , g_mode_curr);
    }
-   DEBUG_MODE   yLOG_snote   (g_text);
-   DEBUG_MODE   yLOG_sexit   (__FUNCTION__);
+   DEBUG_YMODE   yLOG_snote   (g_text);
+   DEBUG_YMODE   yLOG_sexit   (__FUNCTION__);
    yVIEW_modes (g_text); /* push update */
    return 0;
 }
@@ -119,6 +119,29 @@ yMODE_actual            (char a_abbr)
    int n = ymode_by_abbr (a_abbr);
    if (n < 0)  return "not found";
    return g_actual [n];
+}
+
+char
+ymode_dump              (FILE *f)
+{
+   /*---(locals)-----------+-----+-----+-*/
+   char        rce         =  -10;
+   int         n           =    0;
+   /*---(header)-------------------------*/
+   DEBUG_YMODE   yLOG_enter   (__FUNCTION__);
+   /*---(clear)--------------------------*/
+   for (n = 0; n < g_nmode; ++n) {
+      if (n > 0 && g_modes [n].cat != g_modes [n - 1].cat)  fprintf (f, "\n");
+      fprintf (f, "%c  %c  %-3.3s  %-10.10s  %-10.10s  å%sæ  å%sæ  %s\n",
+            g_modes [n].abbr  , g_modes [n].type,
+            g_modes [n].three , g_modes [n].terse,
+            g_modes [n].who   ,
+            g_modes [n].expect, g_actual[n],
+            g_modes [n].desc);
+   }
+   /*---(complete)-----------------------*/
+   DEBUG_YMODE   yLOG_exit    (__FUNCTION__);
+   return 0;
 }
 
 
