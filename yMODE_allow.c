@@ -15,7 +15,7 @@ char   s_modechanges  [MAX_MODES][LEN_TERSE] = {
    { MODE_MAP      , UMOD_VISUAL   , SMOD_MREG     , UMOD_MUNDO    , UMOD_UNIVERSE , UMOD_MARK     , 0             , 0             , 0             , 0             , 0             },
    { MODE_MAP      , SMOD_MACRO    , XMOD_FORMAT   , XMOD_OBJECT   , SMOD_HINT     , SMOD_MENUS    , XMOD_PALETTE  , UMOD_SENDKEYS , XMOD_UNITS    , 0             , 0             },
    { MODE_GOD      , SMOD_MACRO    , SMOD_MENUS    , 0             , 0             , 0             , 0             , 0             , 0             , 0             , 0             },
-   { MODE_PROGRESS , PMOD_REPEAT   , MODE_COMMAND  , 0             , 0             , 0             , 0             , 0             , 0             , 0             , 0             },
+   { MODE_PROGRESS , PMOD_REPEAT   , MODE_COMMAND  , SMOD_MENUS    , 0             , 0             , 0             , 0             , 0             , 0             , 0             },
    { MODE_OMNI     , PMOD_REPEAT   , 0             , 0             , 0             , 0             , 0             , 0             , 0             , 0             , 0             },
    /*---(source-related)-------------*/
    { MODE_SOURCE   , PMOD_REPEAT   , UMOD_INPUT    , UMOD_REPLACE  , UMOD_SUNDO    , SMOD_SREG     , SMOD_MACRO    , UMOD_WANDER   , 0             , 0             , 0             },

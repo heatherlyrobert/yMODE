@@ -11,20 +11,20 @@
 
 #define     P_FOCUS     "RS (run-time support)"
 #define     P_NICHE     "us (user control)"
-#define     P_SUBJECT   "mode tracking and control
-#define     P_PURPOSE   ""
+#define     P_SUBJECT   "mode tracking and control"
+#define     P_PURPOSE   "coordinate the vikeys model interface"
 
 #define     P_NAMESAKE  "zeus-xenia (guest-friend)"
-#define     P_HERITAGE  ""
-#define     P_IMAGERY   ""
-#define     P_REASON    ""
+#define     P_HERITAGE  "xenia is the ancient greek customary treatment of guests"
+#define     P_IMAGERY   "zeus appears as a ordinary traveller to test a household"
+#define     P_REASON    "yMODE is the coordination and treatment of library guests"
 
 #define     P_ONELINE   P_NAMESAKE " " P_SUBJECT
 
 #define     P_BASENAME  "yMODE"
 #define     P_FULLNAME  "/usr/local/lib64/libyMODE"
-#define     P_SUFFIX    ""
-#define     P_CONTENT   ""
+#define     P_SUFFIX    "···"
+#define     P_CONTENT   "···"
 
 #define     P_SYSTEM    "gnu/linux   (powerful, ubiquitous, technical, and hackable)"
 #define     P_LANGUAGE  "ansi-c      (wicked, limitless, universal, and everlasting)"
@@ -36,8 +36,8 @@
 
 #define     P_VERMAJOR  "2.--, clean, improve, and expand"
 #define     P_VERMINOR  "2.1-, converted to SSH access and continue"
-#define     P_VERNUM    "2.1a"
-#define     P_VERTXT    "integrated multi-key repeating into yKEYS and ySRC"
+#define     P_VERNUM    "2.1b"
+#define     P_VERTXT    "first take at zero vikeys library dependency version"
 
 #define     P_PRIORITY  "direct, simple, brief, vigorous, and lucid (h.w. fowler)"
 #define     P_PRINCIPAL "[grow a set] and build your wings on the way down (r. bradbury)"
@@ -53,12 +53,6 @@
 #include    <yURG.h>              /* heatherly urgent processing              */
 #include    <yLOG.h>              /* heatherly program logging                */
 #include    <ySTR.h>              /* heatherly string processing              */
-/*---(custom vi-keys)--------------------*/
-#include    <yKEYS.h>             /* heatherly vi-keys key handling           */
-#include    <yVIEW.h>             /* heatherly vi-keys view management        */
-#include    <yMACRO.h>            /* heatherly vi-keys macro processing       */
-#include    <yFILE.h>             /* heatherly vi-keys content file handling  */
-#include    <yMAP.h>
 
 
 
@@ -107,6 +101,7 @@ extern char       *g_mesg    [MAX_MODES];
 
 typedef    struct    cMY    tMY;
 struct cMY {
+   char        h_major;
    char      (*e_format)   (uchar a_type, uchar a_how, ushort u, ushort x, ushort y, ushort z);
    char      (*e_object)   (uchar a_type, uchar a_how, ushort u, ushort x, ushort y, ushort z);
    char      (*e_palette)  (uchar a_major, uchar a_minor);
@@ -141,18 +136,7 @@ char*       yMODE_version           (void);
 char        yMODE_init              (char a_mode);
 char        yMODE_wrap              (void);
 char        yMODE_handle            (uchar a_key);
-char        ymode__unit_quiet       (void);
-char        ymode__unit_loud        (void);
-char        ymode__unit_end         (void);
-char        yMODE_handler_stub      (uchar a_major, uchar a_minor);
-char        ymode_handler_map       (uchar a_major, uchar a_minor);
-char        ymode_handler_source    (uchar a_major, uchar a_minor);
-char        ymode_handler_input     (uchar a_major, uchar a_minor);
-char        ymode_handler_command   (uchar a_major, uchar a_minor);
-char        yMODE_handler_reset     (void);
-char        ymode_handler_log       (uchar a_mode, uchar a_key);
 char        yMODE_hander_setup      (void);
-char*       yMODE__unit             (char *a_question, int n);
 
 
 /*===[[ yMACRO_control.c ]]===================================================*/
@@ -203,6 +187,49 @@ char        ymode_palette_xmode     (uchar a_major, uchar a_minor);
 
 char        ymode__cust_by_unit     (char a_abbr);
 char        ymode__cust_by_format   (char a_abbr);
+
+
+
+/*===[[ yMODE_test.c ]]=======================================================*/
+/*---(program)--------------*/
+char        ymode_unit__quiet       (void);
+char        ymode_unit__loud        (void);
+char        ymode_unit__end         (void);
+/*---(handlers)-------------*/
+char        ymode_unit__reset       (void);
+char        ymode_unit__log         (uchar a_mode, uchar a_key);
+char        ymode_unit__stub        (uchar a_major, uchar a_minor);
+char        ymode_unit__map         (uchar a_major, uchar a_minor);
+char        ymode_unit__source      (uchar a_major, uchar a_minor);
+char        ymode_unit__input       (uchar a_major, uchar a_minor);
+char        ymode_unit__macro       (uchar a_major, uchar a_minor);
+char        ymode_unit__prepare     (void);
+char        ymode_unit__command     (uchar a_major, uchar a_minor);
+char        yMODE_unit_handlers     (void);
+/*---(accessor)-------------*/
+char*       yMODE_unit              (char *a_question, int n);
+/*---(done)-----------------*/
+
+
+/*===[[ yMODE_libs.c ]]=======================================================*/
+/*---(yKEYS)----------------*/
+char        yMODE_from_yKEYS        (void *f_init, void *f_quit, void *f_warning, void *f_check_rpt, void *f_repeat_umode, void *f_group_hmode, void *f_rpt_check);
+char        ymode_yKEYS_init        (void);
+char        ymode_yKEYS_quit        (void);
+char        ymode_yKEYS_warning     (void);
+char        ymode_yKEYS_check_rpt   (void);
+char        ymode_yKEYS_rpt_umode   (uchar a_major, uchar a_minor);
+char        ymode_yKEYS_grp_hmode   (uchar a_major, uchar a_minor);
+char        ymode_yKEYS_rpt_check   (uchar a_major, uchar a_minor, char a, char b, char c);
+/*---(yMACRO)---------------*/
+char        yMODE_from_yMACRO       (void *f_hmode);
+char        ymode_yMACRO_hmode      (uchar a_major, uchar a_minor);
+/*---(yVIEW)----------------*/
+char        yMODE_from_yVIEW        (void *f_keys, void *f_modes);
+char        ymode_yVIEW_keys        (char *a_text);
+char        ymode_yVIEW_modes       (char *a_text);
+/*---(done)-----------------*/
+
 
 
 #endif

@@ -369,9 +369,9 @@ yMODE_init_set          (char a_abbr, void *a_prepper, void *a_handler)
    ymode__deps_checkall   ();
    ymode__oper_checkall   ();
    /*---(other updates)------------------*/
-   if (a_abbr == FMOD_FILE) {
-      yFILE_dump_add ("modes"     , "", "inventory of mode statuses"  , ymode_dump        );
-   }
+   /*> if (a_abbr == FMOD_FILE) {                                                                  <* 
+    *>    yFILE_dump_add ("modes"     , "", "inventory of mode statuses"  , ymode_dump        );   <* 
+    *> }                                                                                           <*/
    /*---(complete)-----------------------*/
    DEBUG_YMODE   yLOG_exit    (__FUNCTION__);
    return 0;

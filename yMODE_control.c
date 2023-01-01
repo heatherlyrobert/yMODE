@@ -36,10 +36,15 @@ ymode_by_abbr           (char a_abbr)
       if (g_modes [i].abbr != a_abbr)   continue;
       n = i;
       DEBUG_YMODE   yLOG_snote   ("found");
+      break;
    }
-   if (n <  0)  DEBUG_YMODE   yLOG_snote   ("FAILED");
-   if (n >= 0)  x_abbr = a_abbr;
    DEBUG_YMODE   yLOG_sint    (n);
+   if (n <  0) {
+      DEBUG_YMODE   yLOG_snote   ("FAILED");
+      DEBUG_YMODE   yLOG_sexitr  (__FUNCTION__, n);
+      return n;
+   }
+   x_abbr = a_abbr;
    g_last = n;
    /*---(complete)-----------------------*/
    DEBUG_YMODE   yLOG_sexit   (__FUNCTION__);

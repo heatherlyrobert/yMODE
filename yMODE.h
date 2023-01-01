@@ -8,7 +8,7 @@ typedef  unsigned char        uchar;
 /*===[[ CONSTANTS ]]==========================================================*/
 /*---(foundation)------------------------*/
 #define     FMOD_STATUS    '5'
-#define     FMOD_FILE      'f'
+#define     FMOD_FILE      'F'
 #define     FMOD_MODE      '0'
 #define     FMOD_KEYS      'L'
 #define     FMOD_VIEW      'V'
@@ -92,12 +92,26 @@ char        yMODE_check_needs       (char a_abbr);
 char        yMODE_operational       (char a_abbr);
 char        yMODE_init_set          (char a_abbr, void *a_prepper, void *a_handler);
 char        yMODE_conf_set          (char a_abbr, char a_step);
+/*---(unittest)-------------*/
+char        yMODE_unit_handlers     (void);
+char*       yMODE_unit              (char *a_question, int n);
 /*---(done)-----------------*/
-char        yMODE_handler_reset     (void);
-char        yMODE_handler_setup     (void);
-char*       yMODE__unit             (char *a_question, int n);
 
-char        yMODE_handler_stub      (uchar a_major, uchar a_minor);
+
+
+char        yMODE_debug_status      (void);
+
+
+
+/*> char        yMODE_handler_setup     (void);                                       <*/
+
+
+
+char        yMODE_from_yKEYS        (void *f_init, void *f_quit, void *f_warning, void *f_check_rpt, void *f_repeat_umode, void *f_group_hmode, void *f_rpt_check);
+char        yMODE_from_yMACRO       (void *f_hmode);
+char        yMODE_from_yVIEW        (void *f_keys, void *f_modes);
+
+
 
 #endif
 /*============================----end-of-source---============================*/

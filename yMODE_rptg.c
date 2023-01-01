@@ -21,7 +21,7 @@ ymode_update            (void)
    }
    DEBUG_YMODE   yLOG_snote   (g_text);
    DEBUG_YMODE   yLOG_sexit   (__FUNCTION__);
-   yVIEW_modes (g_text); /* push update */
+   ymode_yVIEW_modes (g_text); /* push update */
    return 0;
 }
 
@@ -119,6 +119,28 @@ yMODE_actual            (char a_abbr)
    int n = ymode_by_abbr (a_abbr);
    if (n < 0)  return "not found";
    return g_actual [n];
+}
+
+char
+yMODE_debug_status      (void)
+{
+   /*---(locals)-----------+-----+-----+-*/
+   char        rce         =  -10;
+   int         n           =    0;
+   /*---(header)-------------------------*/
+   DEBUG_YMODE   yLOG_enter   (__FUNCTION__);
+   /*---(clear)--------------------------*/
+   for (n = 0; n < g_nmode; ++n) {
+      if (n == 0) {
+         DEBUG_YMODE  yLOG_value   ("CAT"       , g_modes [n].cat);
+      } else if (g_modes [n].cat != g_modes [n - 1].cat)  {
+         DEBUG_YMODE  yLOG_value   ("CAT"       , g_modes [n].cat);
+      }
+      DEBUG_YMODE  yLOG_complex (g_modes [n].terse , "%c %c %-3.3s %-10.10s %-10.10s å%sæ  å%sæ", g_modes [n].abbr  , g_modes [n].type, g_modes [n].three , g_modes [n].terse, g_modes [n].who   , g_modes [n].expect, g_actual[n]);
+   }
+   /*---(complete)-----------------------*/
+   DEBUG_YMODE   yLOG_exit    (__FUNCTION__);
+   return 0;
 }
 
 char
