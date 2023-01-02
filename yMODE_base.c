@@ -203,7 +203,7 @@ yMODE_handle            (uchar a_key)
    /*> myVIKEYS.trouble   = '-';                                                      <*/
    /*---(handle count)-------------------*/
    if (yMODE_curr () == PMOD_REPEAT) {
-      rc = ymode_yKEYS_rpt_umode (myMODE.h_major, x_minor);
+      rc = yVIHUB_yKEYS_repeat_umode (myMODE.h_major, x_minor);
       if (rc >  0)  myMODE.h_major = G_KEY_SPACE;
    }
    if (yMODE_curr () == PMOD_REPEAT) {
@@ -213,7 +213,7 @@ yMODE_handle            (uchar a_key)
    /*---(handle grouping)----------------*/
    if (strchr ("()", x_minor) != NULL) {
       DEBUG_LOOP   yLOG_complex ("grouping"  , "%c, %3d, %c", yMODE_curr (), x_minor, chrvisible (x_minor));
-      rc = ymode_yKEYS_grp_hmode (myMODE.h_major, x_minor);
+      rc = yVIHUB_yKEYS_group_hmode (myMODE.h_major, x_minor);
       DEBUG_LOOP   yLOG_value   ("group"     , rc);
       if (rc > 0) {
          DEBUG_LOOP   yLOG_exit    (__FUNCTION__);
@@ -251,11 +251,11 @@ yMODE_handle            (uchar a_key)
       /*---(handle returns)--------------*/
       if (rc <   0) {
          DEBUG_LOOP   yLOG_note    ("negative return, warning");
-         ymode_yKEYS_warning  ();
+         yVIHUB_yKEYS_set_warning  ();
       }
       /*---(check repeats)---------------*/
       DEBUG_LOOP   yLOG_note    ("repeat checking");
-      x_again = ymode_yKEYS_rpt_check (myMODE.h_major, x_minor, x_prev, x_curr, rc);
+      x_again = yVIHUB_yKEYS_repeat_check (myMODE.h_major, x_minor, x_prev, x_curr, rc);
       DEBUG_LOOP   yLOG_value   ("x_again"   , x_again);
       if (x_again != 1) break;
       /*---(done)------------------------*/
@@ -265,8 +265,8 @@ yMODE_handle            (uchar a_key)
    else if (rc >   0)    myMODE.h_major = G_KEY_SPACE;
    else if (rc ==  0)    myMODE.h_major = G_KEY_SPACE;
    else                  myMODE.h_major = G_KEY_SPACE;
-   ymode_yKEYS_check_rpt ();
-   ymode_yVIEW_keys      (x_keys);
+   yVIHUB_yKEYS_check_repeat ();
+   yVIHUB_yVIEW_keys      (x_keys);
    /*---(complete)-----------------------*/
    DEBUG_LOOP   yLOG_exit    (__FUNCTION__);
    return rc;

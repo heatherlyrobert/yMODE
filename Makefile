@@ -8,7 +8,7 @@ NAME_BASE  = yMODE
 # additional standard and outside libraries
 LIB_STD    = 
 # all heatherly libraries used, debug versions whenever available
-LIB_MINE   = -lySTR_debug
+LIB_MINE   = -lySTR_debug -lyVIHUB_debug
 # directory for production code, no trailing slash
 INST_DIR   = 
 

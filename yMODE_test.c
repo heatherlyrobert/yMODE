@@ -61,7 +61,7 @@ static char  s_keys [LEN_RECD] = "";
 static char  s_mode [LEN_RECD] = "";
 
 char
-ymode_unit__reset       (void)
+yMODE_unit_reset        (void)
 {
    strlcpy (s_keys, "", LEN_RECD);
    strlcpy (s_mode, "", LEN_RECD);
@@ -117,7 +117,7 @@ ymode_unit__map          (uchar a_major, uchar a_minor)
                yMODE_enter (MODE_COMMAND);
                break;
    case '@'  : case 'q'    : case 'Q'      :
-               rc = ymode_yMACRO_hmode (a_major, a_minor);
+               rc = yVIHUB_yMACRO_hmode (a_major, a_minor);
                break;
    }
    DEBUG_YMODE   yLOG_exit    (__FUNCTION__);
@@ -145,7 +145,7 @@ ymode_unit__source       (uchar a_major, uchar a_minor)
       yMODE_enter (UMOD_INPUT);
       break;
    case '@'  : case 'q'    : case 'Q'      :
-      rc = ymode_yMACRO_hmode (a_major, a_minor);
+      rc = yVIHUB_yMACRO_hmode (a_major, a_minor);
       break;
    }
    DEBUG_YMODE   yLOG_exit    (__FUNCTION__);
@@ -187,9 +187,9 @@ ymode_unit__command      (uchar a_major, uchar a_minor)
    DEBUG_YMODE   yLOG_enter   (__FUNCTION__);
    switch (a_minor) {
    case '¦'  : case G_KEY_RETURN :
-      if      (strcmp (":q"     , s_command) == 0)  ymode_yKEYS_quit ();
-      else if (strcmp (":qa"    , s_command) == 0)  ymode_yKEYS_quit ();
-      else if (strcmp (":wqa"   , s_command) == 0)  ymode_yKEYS_quit ();
+      if      (strcmp (":q"     , s_command) == 0)  yVIHUB_yKEYS_quit ();
+      else if (strcmp (":qa"    , s_command) == 0)  yVIHUB_yKEYS_quit ();
+      else if (strcmp (":wqa"   , s_command) == 0)  yVIHUB_yKEYS_quit ();
       yMODE_exit  ();
       break;
    case '¥'  : case G_KEY_ESCAPE :
@@ -220,9 +220,8 @@ char
 yMODE_unit_handlers     (void)
 {
    DEBUG_YMODE   yLOG_enter   (__FUNCTION__);
-   ymode_unit__reset ();
+   yMODE_unit_reset ();
    yMODE_init_set (FMOD_KEYS    , NULL, NULL);
-   yMODE_init_set (PMOD_REPEAT  , NULL, NULL);
    yMODE_init_set (FMOD_FILE    , NULL, NULL);
    yMODE_init_set (MODE_COMMAND , ymode_unit__prepare, ymode_unit__command);
    yMODE_conf_set (FMOD_FILE    , '1');
@@ -236,6 +235,7 @@ yMODE_unit_handlers     (void)
    yMODE_conf_set (SMOD_MACRO   , '1');
    yMODE_init_set (UMOD_SUNDO   , NULL, ymode_unit__stub);
    yMODE_init_set (SMOD_SREG    , NULL, ymode_unit__stub);
+   yMODE_init_set (PMOD_REPEAT  , NULL, NULL);
    DEBUG_PROG   yLOG_info    ("mode"      , yMODE_actual (FMOD_MODE));
    DEBUG_PROG   yLOG_info    ("keys"      , yMODE_actual (FMOD_KEYS));
    DEBUG_PROG   yLOG_info    ("status"    , yMODE_actual (FMOD_STATUS));
@@ -247,7 +247,7 @@ yMODE_unit_handlers     (void)
    DEBUG_PROG   yLOG_info    ("input"     , yMODE_actual (UMOD_INPUT));
    DEBUG_PROG   yLOG_info    ("macro"     , yMODE_actual (SMOD_MACRO));
    DEBUG_PROG   yLOG_info    ("repeat"    , yMODE_actual (PMOD_REPEAT));
-   ymode_yKEYS_init ();
+   yVIHUB_yKEYS_init ();
    DEBUG_YMODE   yLOG_exit    (__FUNCTION__);
    return 0;
 }

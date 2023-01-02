@@ -21,7 +21,7 @@ ymode_update            (void)
    }
    DEBUG_YMODE   yLOG_snote   (g_text);
    DEBUG_YMODE   yLOG_sexit   (__FUNCTION__);
-   ymode_yVIEW_modes (g_text); /* push update */
+   yVIHUB_yVIEW_modes (g_text); /* push update */
    return 0;
 }
 

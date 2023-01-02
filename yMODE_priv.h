@@ -36,8 +36,8 @@
 
 #define     P_VERMAJOR  "2.--, clean, improve, and expand"
 #define     P_VERMINOR  "2.1-, converted to SSH access and continue"
-#define     P_VERNUM    "2.1b"
-#define     P_VERTXT    "first take at zero vikeys library dependency version"
+#define     P_VERNUM    "2.1c"
+#define     P_VERTXT    "moved cross-library integration to yVIHUB"
 
 #define     P_PRIORITY  "direct, simple, brief, vigorous, and lucid (h.w. fowler)"
 #define     P_PRINCIPAL "[grow a set] and build your wings on the way down (r. bradbury)"
@@ -53,6 +53,7 @@
 #include    <yURG.h>              /* heatherly urgent processing              */
 #include    <yLOG.h>              /* heatherly program logging                */
 #include    <ySTR.h>              /* heatherly string processing              */
+#include    <yVIHUB.h>            /* yvikeys coordintation                    */
 
 
 
@@ -196,7 +197,7 @@ char        ymode_unit__quiet       (void);
 char        ymode_unit__loud        (void);
 char        ymode_unit__end         (void);
 /*---(handlers)-------------*/
-char        ymode_unit__reset       (void);
+char        yMODE_unit_reset        (void);
 char        ymode_unit__log         (uchar a_mode, uchar a_key);
 char        ymode_unit__stub        (uchar a_major, uchar a_minor);
 char        ymode_unit__map         (uchar a_major, uchar a_minor);
@@ -213,21 +214,21 @@ char*       yMODE_unit              (char *a_question, int n);
 
 /*===[[ yMODE_libs.c ]]=======================================================*/
 /*---(yKEYS)----------------*/
-char        yMODE_from_yKEYS        (void *f_init, void *f_quit, void *f_warning, void *f_check_rpt, void *f_repeat_umode, void *f_group_hmode, void *f_rpt_check);
-char        ymode_yKEYS_init        (void);
-char        ymode_yKEYS_quit        (void);
-char        ymode_yKEYS_warning     (void);
-char        ymode_yKEYS_check_rpt   (void);
-char        ymode_yKEYS_rpt_umode   (uchar a_major, uchar a_minor);
-char        ymode_yKEYS_grp_hmode   (uchar a_major, uchar a_minor);
-char        ymode_yKEYS_rpt_check   (uchar a_major, uchar a_minor, char a, char b, char c);
+/*> char        yMODE_from_yKEYS        (void *f_init, void *f_quit, void *f_warning, void *f_check_rpt, void *f_repeat_umode, void *f_group_hmode, void *f_rpt_check);   <*/
+/*> char        ymode_yKEYS_init        (void);                                       <*/
+/*> char        ymode_yKEYS_quit        (void);                                       <*/
+/*> char        ymode_yKEYS_warning     (void);                                       <*/
+/*> char        ymode_yKEYS_check_rpt   (void);                                       <*/
+/*> char        ymode_yKEYS_rpt_umode   (uchar a_major, uchar a_minor);               <*/
+/*> char        ymode_yKEYS_grp_hmode   (uchar a_major, uchar a_minor);               <*/
+/*> char        ymode_yKEYS_rpt_check   (uchar a_major, uchar a_minor, char a, char b, char c);   <*/
 /*---(yMACRO)---------------*/
-char        yMODE_from_yMACRO       (void *f_hmode);
-char        ymode_yMACRO_hmode      (uchar a_major, uchar a_minor);
+/*> char        yMODE_from_yMACRO       (void *f_hmode);                              <*/
+/*> char        ymode_yMACRO_hmode      (uchar a_major, uchar a_minor);               <*/
 /*---(yVIEW)----------------*/
-char        yMODE_from_yVIEW        (void *f_keys, void *f_modes);
-char        ymode_yVIEW_keys        (char *a_text);
-char        ymode_yVIEW_modes       (char *a_text);
+/*> char        yMODE_from_yVIEW        (void *f_keys, void *f_modes);                <*/
+/*> char        ymode_yVIEW_keys        (char *a_text);                               <*/
+/*> char        ymode_yVIEW_modes       (char *a_text);                               <*/
 /*---(done)-----------------*/
 
 
