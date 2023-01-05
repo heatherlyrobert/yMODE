@@ -36,8 +36,8 @@
 
 #define     P_VERMAJOR  "2.--, clean, improve, and expand"
 #define     P_VERMINOR  "2.1-, converted to SSH access and continue"
-#define     P_VERNUM    "2.1c"
-#define     P_VERTXT    "moved cross-library integration to yVIHUB"
+#define     P_VERNUM    "2.1d"
+#define     P_VERTXT    "fully integrated into yVIHUB/yVICURSES with better status/dump"
 
 #define     P_PRIORITY  "direct, simple, brief, vigorous, and lucid (h.w. fowler)"
 #define     P_PRINCIPAL "[grow a set] and build your wings on the way down (r. bradbury)"
@@ -156,8 +156,7 @@ char        yMODE_not               (char a_mode);
 char        ymode_update            (void);
 char*       yMODE_text              (void);
 char*       yMODE_message           (void);
-char        yMODE_status            (char a_size, short a_wide, char *a_list);
-char        ymode_dump              (FILE *f);
+char        yMODE_status            (char a_size, short a_wide, char a_list [LEN_FULL]);
 
 
 /*===[[ yMACRO_status.c ]]====================================================*/

@@ -22,6 +22,7 @@ ymode_unit__quiet       (void)
    /*> yURG_logger   (x_narg, x_args);                                                <*/
    /*> yURG_urgs     (x_narg, x_args);                                                <*/
    yMODE_init (MODE_MAP);
+   yMODE_init_after ();
    return 0;
 }
 
@@ -33,10 +34,12 @@ ymode_unit__loud        (void)
    yURG_logger   (x_narg, x_args);
    yURG_urgs     (x_narg, x_args);
    yURG_name  ("kitchen"      , YURG_ON);
+   yURG_name  ("yvihub"       , YURG_ON);
    yURG_name  ("ymode"        , YURG_ON);
    yURG_name  ("ystr"         , YURG_ON);
    DEBUG_YMODE  yLOG_info     ("yMODE"     , yMODE_version   ());
    yMODE_init (MODE_MAP);
+   yMODE_init_after ();
    return 0;
 }
 
@@ -80,7 +83,7 @@ ymode_unit__log         (uchar a_mode, uchar a_key)
    return 0;
 }
 
-char ymode_unit__stub      (uchar a_major, uchar a_minor) { return 0; }
+char yMODE_unit_stub      (uchar a_major, uchar a_minor) { return 0; }
 
 char
 ymode_unit__map          (uchar a_major, uchar a_minor)
@@ -220,22 +223,41 @@ char
 yMODE_unit_handlers     (void)
 {
    DEBUG_YMODE   yLOG_enter   (__FUNCTION__);
+   /*---(reset)---------------------------*/
    yMODE_unit_reset ();
-   yMODE_init_set (FMOD_KEYS    , NULL, NULL);
-   yMODE_init_set (FMOD_FILE    , NULL, NULL);
-   yMODE_init_set (MODE_COMMAND , ymode_unit__prepare, ymode_unit__command);
-   yMODE_conf_set (FMOD_FILE    , '1');
-   yMODE_init_set (FMOD_VIEW    , NULL, NULL);
-   yMODE_init_set (MODE_MAP     , NULL, ymode_unit__map);
-   yMODE_conf_set (MODE_MAP     , '1');
-   yMODE_init_set (MODE_SOURCE  , NULL, ymode_unit__source);
-   yMODE_conf_set (MODE_SOURCE  , '1');
-   yMODE_init_set (UMOD_INPUT   , NULL, ymode_unit__input);
-   yMODE_init_set (SMOD_MACRO   , NULL, ymode_unit__macro);
-   yMODE_conf_set (SMOD_MACRO   , '1');
-   yMODE_init_set (UMOD_SUNDO   , NULL, ymode_unit__stub);
-   yMODE_init_set (SMOD_SREG    , NULL, ymode_unit__stub);
-   yMODE_init_set (PMOD_REPEAT  , NULL, NULL);
+   /*---(init/yvihub)---------------------*/
+   yMODE_init_set   (FMOD_KEYS    , NULL, NULL);
+   yMODE_yvihub_set (FMOD_KEYS    );
+   yMODE_init_set   (FMOD_FILE    , NULL, NULL);
+   yMODE_yvihub_set (FMOD_FILE    );
+   yMODE_init_set   (MODE_COMMAND , ymode_unit__prepare, ymode_unit__command);
+   yMODE_yvihub_set (MODE_COMMAND );
+   yMODE_init_set   (FMOD_VIEW    , NULL, NULL);
+   yMODE_yvihub_set (FMOD_VIEW    );
+   yMODE_init_set   (MODE_MAP     , NULL, ymode_unit__map);
+   yMODE_yvihub_set (MODE_MAP     );
+   yMODE_init_set   (MODE_SOURCE  , NULL, ymode_unit__source);
+   yMODE_yvihub_set (MODE_SOURCE  );
+   yMODE_init_set   (UMOD_INPUT   , NULL, ymode_unit__input);
+   yMODE_init_set   (SMOD_MACRO   , NULL, ymode_unit__macro);
+   yMODE_yvihub_set (SMOD_MACRO   );
+   yMODE_init_set   (UMOD_SUNDO   , NULL, yMODE_unit_stub);
+   yMODE_init_set   (SMOD_SREG    , NULL, yMODE_unit_stub);
+   yMODE_init_set   (PMOD_REPEAT  , NULL, yMODE_unit_stub);
+   /*---(after)---------------------------*/
+   yMODE_after_set  (FMOD_KEYS    );
+   yMODE_after_set  (FMOD_FILE    );
+   yMODE_after_set  (MODE_COMMAND );
+   yMODE_after_set  (FMOD_VIEW    );
+   yMODE_after_set  (MODE_MAP     );
+   yMODE_after_set  (MODE_SOURCE  );
+   yMODE_after_set  (SMOD_MACRO   );
+   /*---(sonf)----------------------------*/
+   yMODE_conf_set   (FMOD_FILE    , '1');
+   yMODE_conf_set   (MODE_MAP     , '1');
+   yMODE_conf_set   (MODE_SOURCE  , '1');
+   yMODE_conf_set   (SMOD_MACRO   , '1');
+   /*---(done)----------------------------*/
    DEBUG_PROG   yLOG_info    ("mode"      , yMODE_actual (FMOD_MODE));
    DEBUG_PROG   yLOG_info    ("keys"      , yMODE_actual (FMOD_KEYS));
    DEBUG_PROG   yLOG_info    ("status"    , yMODE_actual (FMOD_STATUS));
