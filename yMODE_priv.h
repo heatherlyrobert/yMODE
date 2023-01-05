@@ -3,47 +3,55 @@
 #define yMODE_priv yes
 
 
-
-/*===[[ BEG_HEADER ]]=========================================================*/
-/*345678901-12345678901-12345678901-12345678901-12345678901-12345678901-12345678901-12345678901-*/
-
-/*===[[ ONE_LINERS ]]=========================================================*/
-
+/*===[[ HEADER BEG ]]=========================================================*/
+/*                      ´·········1·········2·········3·········4·········5·········6·········7*/
+/*--------- 12345678901 ´123456789-123456789-123456789-123456789-123456789-123456789-123456789-*/
+/*········· ··········· ´·····························´········································*/
+#define     P_NAME      "yMODE"
+/*········· ··········· ´·····························´········································*/
 #define     P_FOCUS     "RS (run-time support)"
 #define     P_NICHE     "us (user control)"
 #define     P_SUBJECT   "mode tracking and control"
 #define     P_PURPOSE   "coordinate the vikeys model interface"
-
+/*········· ··········· ´·····························´········································*/
 #define     P_NAMESAKE  "zeus-xenia (guest-friend)"
+#define     P_PRONOUNCE "zoos zeen·eea"
 #define     P_HERITAGE  "xenia is the ancient greek customary treatment of guests"
+#define     P_BRIEFLY   "customs for guest-friends"
 #define     P_IMAGERY   "zeus appears as a ordinary traveller to test a household"
 #define     P_REASON    "yMODE is the coordination and treatment of library guests"
-
+/*········· ··········· ´·····························´········································*/
 #define     P_ONELINE   P_NAMESAKE " " P_SUBJECT
-
+/*········· ··········· ´·····························´········································*/
+#define     P_HOMEDIR   "/home/system/yMODE.vi_mode_tracking"
 #define     P_BASENAME  "yMODE"
 #define     P_FULLNAME  "/usr/local/lib64/libyMODE"
 #define     P_SUFFIX    "···"
 #define     P_CONTENT   "···"
-
+/*········· ··········· ´·····························´········································*/
 #define     P_SYSTEM    "gnu/linux   (powerful, ubiquitous, technical, and hackable)"
 #define     P_LANGUAGE  "ansi-c      (wicked, limitless, universal, and everlasting)"
+#define     P_COMPILER  "gcc 11.3.0"
 #define     P_CODESIZE  "large       (appoximately 10,000 slocl)"
 #define     P_DEPENDS   "none"
-
+/*········· ··········· ´·····························´········································*/
 #define     P_AUTHOR    "heatherlyrobert"
-#define     P_CREATED   ""
-
+#define     P_CREATED   "2016-11"
+/*········· ··········· ´·····························´········································*/
 #define     P_VERMAJOR  "2.--, clean, improve, and expand"
 #define     P_VERMINOR  "2.1-, converted to SSH access and continue"
 #define     P_VERNUM    "2.1d"
 #define     P_VERTXT    "fully integrated into yVIHUB/yVICURSES with better status/dump"
-
+/*········· ··········· ´·····························´········································*/
 #define     P_PRIORITY  "direct, simple, brief, vigorous, and lucid (h.w. fowler)"
 #define     P_PRINCIPAL "[grow a set] and build your wings on the way down (r. bradbury)"
 #define     P_REMINDER  "there are many better options, but i *own* every byte of this one"
+/*········· ··········· ´·····························´········································*/
+/*--------- 12345678901 ´123456789-123456789-123456789-123456789-123456789-123456789-123456789-*/
+/*                      ´·········1·········2·········3·········4·········5·········6·········7*/
+/*===[[ HEADER END ]]=========================================================*/
 
-/*===[[ END_HEADER ]]=========================================================*/
+
 
 /*---(ansi-c standard)-------------------*/
 #include    <stdio.h>             /* clibc  standard input/output             */
