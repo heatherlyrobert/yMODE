@@ -31,17 +31,23 @@
 /*········· ··········· ´·····························´········································*/
 #define     P_SYSTEM    "gnu/linux   (powerful, ubiquitous, technical, and hackable)"
 #define     P_LANGUAGE  "ansi-c      (wicked, limitless, universal, and everlasting)"
+#define     P_CODESIZE  "small       ()"
 #define     P_COMPILER  "gcc 11.3.0"
-#define     P_CODESIZE  "large       (appoximately 10,000 slocl)"
-#define     P_DEPENDS   "none"
+/*········· ··········· ´·····························´········································*/
+#define     P_DEPSTDC   "stdio,stdlib,string"
+#define     P_DEPEXTEND "···"
+#define     P_DEPCORE   "yURG,yLOG,ySTR"
+#define     P_DEPVIKEYS "yVIHUB"
+#define     P_DEPOTHER  "···"
+#define     P_DEPSOLO   "···"
 /*········· ··········· ´·····························´········································*/
 #define     P_AUTHOR    "heatherlyrobert"
 #define     P_CREATED   "2016-11"
 /*········· ··········· ´·····························´········································*/
 #define     P_VERMAJOR  "2.--, clean, improve, and expand"
 #define     P_VERMINOR  "2.1-, converted to SSH access and continue"
-#define     P_VERNUM    "2.1d"
-#define     P_VERTXT    "fully integrated into yVIHUB/yVICURSES with better status/dump"
+#define     P_VERNUM    "2.1e"
+#define     P_VERTXT    "updated with yURG_by_name change"
 /*········· ··········· ´·····························´········································*/
 #define     P_PRIORITY  "direct, simple, brief, vigorous, and lucid (h.w. fowler)"
 #define     P_PRINCIPAL "[grow a set] and build your wings on the way down (r. bradbury)"
@@ -61,7 +67,9 @@
 #include    <yURG.h>              /* heatherly urgent processing              */
 #include    <yLOG.h>              /* heatherly program logging                */
 #include    <ySTR.h>              /* heatherly string processing              */
+/*---(custom yvikeys)--------------------*/
 #include    <yVIHUB.h>            /* yvikeys coordintation                    */
+/*---(done)------------------------------*/
 
 
 

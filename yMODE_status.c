@@ -6,7 +6,7 @@
 
 /*                          0         1         2         3         4       */
 /*                          -123456789-123456789-123456789-123456789-12345  */
-#define       S_DEFAULT    "----- - --- - - ----- - ----- - ---------- - -"
+#define       S_DEFAULT    "····· - ··· - - ····· - ····· - ·········· - -"
 
 #define       S_PRE        0   /* who needs to be initialized before me */
 #define       S_PREP       6   /* all required initializations by others done */
@@ -68,7 +68,7 @@ ymode__check            (char a_abbr, char a_target)
    /*---(check)--------------------------*/
    DEBUG_YMODE   yLOG_char    ("a_target"  , a_target);
    DEBUG_YMODE   yLOG_char    ("a_val"     , x_val);
-   if (x_exp != '-' && x_val != a_target) {
+   if (x_exp != '·' && x_val != a_target) {
       DEBUG_YMODE   yLOG_note    ("NOT READY");
       DEBUG_YMODE   yLOG_exit    (__FUNCTION__);
       return 0;
@@ -179,7 +179,7 @@ ymode__filling          (char a_abbr, char a_target)
    for (n = 0; n < g_nmode; ++n) {
       DEBUG_YMODE   yLOG_char    ("test"      , g_modes [n].abbr);
       for (i = 0; i < x_len; ++i) {
-         if (g_modes [n].expect [x_loc + i] == '-')       continue;
+         if (g_modes [n].expect [x_loc + i] == '·')       continue;
          if (g_modes [n].expect [x_loc + i] != a_abbr)    continue;
          g_actual [n] [x_loc + i] = a_abbr;
          ++c;
@@ -445,7 +445,7 @@ yMODE_init_set          (char a_abbr, void *a_prepper, void *a_handler)
    }
    n = g_last;
    /*---(check the handler)--------------*/
-   --rce;  if (g_modes [n].expect [S_FUNC] != '-') {
+   --rce;  if (g_modes [n].expect [S_FUNC] != '·') {
       if (a_handler == NULL) {
          DEBUG_YMODE   yLOG_exitr   (__FUNCTION__, rce);
          return rce;
@@ -578,6 +578,7 @@ ymode_status_purge      (void)
    for (i = 0; i < g_nmode; ++i) {
       DEBUG_YMODE   yLOG_schar   (g_modes [i].abbr);
       strlcpy (g_actual [i], S_DEFAULT, LEN_DESC);
+      if (g_modes [i].expect [S_AFTER] == ' ')  g_actual [i] [S_AFTER] = ' ';
    }
    /*---(complete)-----------------------*/
    DEBUG_YMODE   yLOG_sexit   (__FUNCTION__);
@@ -595,7 +596,7 @@ ymode_status_init       (void)
    g_nmode = 0;
    for (i = 0; i < MAX_MODES; ++i) {
       if (g_modes [i].abbr == 0  )  break;
-      if (g_modes [i].abbr == '-')  break;
+      if (g_modes [i].abbr == '·')  break;
       ++g_nmode;
    }
    DEBUG_YMODE   yLOG_value   ("g_nmode" , g_nmode);

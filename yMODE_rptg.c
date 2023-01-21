@@ -93,6 +93,8 @@ yMODE_statuses          (void *a_file)
    int         S           =    0;
    int         U           =    0;
    int         x           =    0;
+   int         O           =    0;
+   int         l           =    0;
    int         x_cat       =   -1;
    FILE       *x_file      = NULL;
    /*---(header)-------------------------*/
@@ -128,6 +130,8 @@ yMODE_statuses          (void *a_file)
       case 'u' : ++U;  break;
       case 'x' : ++x;  break;
       }
+      l = strlen (g_actual [n]);
+      if (g_actual [n] [l - 1] == 'o')  ++O;
       /*---(save)------------------------*/
       x_cat = g_modes [n].cat;
       /*---(done)------------------------*/
@@ -136,7 +140,7 @@ yMODE_statuses          (void *a_file)
    fprintf (x_file, "##  a  ---  name------  t  c  s  source----  åprep--- init--- needs-- conf--- deps-------- oæ  åprep--- init--- needs-- conf--- deps-------- oæ  ---description------------------------------------\n");
    fprintf (x_file, "##---mode----------------------------------  ---expected-------------------------------------  ---actual---------------------------------------                                                    \n");
    fprintf (x_file, "##\n");
-   fprintf (x_file, "## status mode count %d (fund %d, major %d, sub %d, micro %d, extern %d)\n", c, F, M, S, U, x);
+   fprintf (x_file, "## status mode count %d (fund %d, major %d, sub %d, micro %d, extern %d) and %d operational\n", c, F, M, S, U, x, O);
    /*---(complete)-----------------------*/
    DEBUG_YMODE   yLOG_exit    (__FUNCTION__);
    return 0;

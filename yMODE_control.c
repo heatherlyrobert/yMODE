@@ -32,7 +32,7 @@ ymode_by_abbr           (char a_abbr)
    /*---(lookup)-------------------------*/
    n = -1;
    for (i = 0; i < MAX_MODES; ++i) {
-      if (g_modes [i].abbr == '-'    )  break;
+      if (g_modes [i].abbr == '·'    )  break;
       if (g_modes [i].abbr != a_abbr)   continue;
       n = i;
       DEBUG_YMODE   yLOG_snote   ("found");

@@ -17,10 +17,6 @@ int            s_ypos      = 0;
 char       /*----: set up program urgents/debugging --------------------------*/
 ymode_unit__quiet       (void)
 {
-   int         x_narg       = 1;
-   char       *x_args [20]  = {"yMODE_unit" };
-   /*> yURG_logger   (x_narg, x_args);                                                <*/
-   /*> yURG_urgs     (x_narg, x_args);                                                <*/
    yMODE_init (MODE_MAP);
    yMODE_init_after ();
    return 0;
@@ -30,13 +26,13 @@ char       /*----: set up program urgents/debugging --------------------------*/
 ymode_unit__loud        (void)
 {
    int         x_narg       = 1;
-   char       *x_args [20]  = {"yMODE_unit" };
+   char       *x_args [ 1]  = {"yMODE_unit" };
    yURG_logger   (x_narg, x_args);
    yURG_urgs     (x_narg, x_args);
-   yURG_name  ("kitchen"      , YURG_ON);
-   yURG_name  ("yvihub"       , YURG_ON);
-   yURG_name  ("ymode"        , YURG_ON);
-   yURG_name  ("ystr"         , YURG_ON);
+   yURG_by_name  ("kitchen"      , YURG_ON);
+   yURG_by_name  ("yvihub"       , YURG_ON);
+   yURG_by_name  ("ymode"        , YURG_ON);
+   yURG_by_name  ("ystr"         , YURG_ON);
    DEBUG_YMODE  yLOG_info     ("yMODE"     , yMODE_version   ());
    yMODE_init (MODE_MAP);
    yMODE_init_after ();
@@ -212,7 +208,19 @@ ymode_unit__macro        (uchar a_major, uchar a_minor)
 {
    ymode_unit__log ('@', a_minor);
    DEBUG_YMODE   yLOG_enter   (__FUNCTION__);
-   yMODE_exit  ();
+   switch (a_minor) {
+   case '@'      :
+      DEBUG_YMODE   yLOG_note    ("macro execution");
+      yMODE_enter  (SMOD_MACRO   );
+      break;
+   case 'q'      :
+      DEBUG_YMODE   yLOG_note    ("begin macro recording");
+      yMODE_enter  (SMOD_MACRO   );
+      break;
+   case 'Q'      :
+      DEBUG_YMODE   yLOG_note    ("reset macro recording");
+      break;
+   }
    DEBUG_YMODE   yLOG_exit    (__FUNCTION__);
    return 0;
 }
@@ -226,6 +234,7 @@ yMODE_unit_handlers     (void)
    /*---(reset)---------------------------*/
    yMODE_unit_reset ();
    /*---(init/yvihub)---------------------*/
+   yMODE_results ();
    yMODE_init_set   (FMOD_KEYS    , NULL, NULL);
    yMODE_yvihub_set (FMOD_KEYS    );
    yMODE_init_set   (FMOD_FILE    , NULL, NULL);
@@ -245,6 +254,7 @@ yMODE_unit_handlers     (void)
    yMODE_init_set   (SMOD_SREG    , NULL, yMODE_unit_stub);
    yMODE_init_set   (PMOD_REPEAT  , NULL, yMODE_unit_stub);
    /*---(after)---------------------------*/
+   yMODE_results ();
    yMODE_after_set  (FMOD_KEYS    );
    yMODE_after_set  (FMOD_FILE    );
    yMODE_after_set  (MODE_COMMAND );
@@ -253,23 +263,13 @@ yMODE_unit_handlers     (void)
    yMODE_after_set  (MODE_SOURCE  );
    yMODE_after_set  (SMOD_MACRO   );
    /*---(sonf)----------------------------*/
+   yMODE_results ();
    yMODE_conf_set   (FMOD_FILE    , '1');
    yMODE_conf_set   (MODE_MAP     , '1');
    yMODE_conf_set   (MODE_SOURCE  , '1');
    yMODE_conf_set   (SMOD_MACRO   , '1');
+   yMODE_results ();
    /*---(done)----------------------------*/
-   DEBUG_PROG   yLOG_info    ("mode"      , yMODE_actual (FMOD_MODE));
-   DEBUG_PROG   yLOG_info    ("keys"      , yMODE_actual (FMOD_KEYS));
-   DEBUG_PROG   yLOG_info    ("status"    , yMODE_actual (FMOD_STATUS));
-   DEBUG_PROG   yLOG_info    ("view"      , yMODE_actual (FMOD_VIEW));
-   DEBUG_PROG   yLOG_info    ("file"      , yMODE_actual (FMOD_FILE));
-   DEBUG_PROG   yLOG_info    ("map"       , yMODE_actual (MODE_MAP));
-   DEBUG_PROG   yLOG_info    ("comand"    , yMODE_actual (MODE_COMMAND));
-   DEBUG_PROG   yLOG_info    ("source"    , yMODE_actual (MODE_SOURCE));
-   DEBUG_PROG   yLOG_info    ("input"     , yMODE_actual (UMOD_INPUT));
-   DEBUG_PROG   yLOG_info    ("macro"     , yMODE_actual (SMOD_MACRO));
-   DEBUG_PROG   yLOG_info    ("repeat"    , yMODE_actual (PMOD_REPEAT));
-   yVIHUB_yKEYS_init ();
    DEBUG_YMODE   yLOG_exit    (__FUNCTION__);
    return 0;
 }
