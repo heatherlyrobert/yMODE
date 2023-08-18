@@ -22,7 +22,7 @@ char   s_modechanges  [MAX_MODES][LEN_TERSE] = {
    { MODE_COMMAND  , PMOD_REPEAT   , UMOD_INPUT    , UMOD_REPLACE  , UMOD_SUNDO    , SMOD_SREG     , UMOD_HISTORY  , 0             , 0             , 0             , 0             },
    { MODE_SEARCH   , PMOD_REPEAT   , UMOD_INPUT    , UMOD_REPLACE  , UMOD_SUNDO    , SMOD_SREG     , UMOD_HISTORY  , 0             , 0             , 0             , 0             },
    { SMOD_HINT     , PMOD_REPEAT   , UMOD_INPUT    , UMOD_REPLACE  , UMOD_SUNDO    , 0             , 0             , 0             , 0             , 0             , 0             },
-   { UMOD_INPUT    , UMOD_WANDER   , 0             , 0             , 0             , 0             , 0             , 0             , 0             , 0             , 0             },
+   { UMOD_INPUT    , UMOD_WANDER   , UMOD_HISTORY  , 0             , 0             , 0             , 0             , 0             , 0             , 0             , 0             },
    { UMOD_WANDER   , PMOD_REPEAT   , 0             , 0             , 0             , 0             , 0             , 0             , 0             , 0             , 0             },
    /*---(externnal)------------------*/
    { XMOD_FORMAT   , XMOD_UNITS    , 0             , 0             , 0             , 0             , 0             , 0             , 0             , 0             , 0             },
