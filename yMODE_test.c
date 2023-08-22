@@ -253,6 +253,7 @@ yMODE_unit_handlers     (void)
    yMODE_init_set   (UMOD_SUNDO   , NULL, yMODE_unit_stub);
    yMODE_init_set   (SMOD_SREG    , NULL, yMODE_unit_stub);
    yMODE_init_set   (PMOD_REPEAT  , NULL, yMODE_unit_stub);
+   yMODE_init_set   (UMOD_HISTORY , NULL, yMODE_unit_stub);
    /*---(after)---------------------------*/
    yMODE_results ();
    yMODE_after_set  (FMOD_KEYS    );
