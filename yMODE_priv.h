@@ -46,8 +46,8 @@
 /*········· ··········· ´·····························´········································*/
 #define     P_VERMAJOR  "2.--, clean, improve, and expand"
 #define     P_VERMINOR  "2.1-, converted to SSH access and continue"
-#define     P_VERNUM    "2.1g"
-#define     P_VERTXT    "slight test update"
+#define     P_VERNUM    "2.1h"
+#define     P_VERTXT    "added yMODE_exited to fix UMOD_HISTORY exiting into source properly"
 /*········· ··········· ´·····························´········································*/
 #define     P_PRIORITY  "direct, simple, brief, vigorous, and lucid (h.w. fowler)"
 #define     P_PRINCIPAL "[grow a set] and build your wings on the way down (r. bradbury)"
@@ -130,6 +130,7 @@ extern tMY         myMODE;
 extern char    g_mode_stack    [MAX_STACK]; /* vi-like mode stack             */
 extern int     g_mode_depth;                /* depth of current mode stack    */
 extern char    g_mode_curr;                 /* current mode in stack          */
+extern char    g_mode_exited;               /* last exited mode               */
 extern char    g_message       [LEN_RECD];
 extern char    g_last;
 extern char    g_text          [LEN_TERSE];
@@ -165,6 +166,7 @@ char        yMODE_exit              (void);
 char        yMODE_curr              (void);
 char        yMODE_prev              (void);
 char        yMODE_not               (char a_mode);
+char        yMODE_exited            (void);
 
 
 /*===[[ yMACRO_rptg.c ]]======================================================*/

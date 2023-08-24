@@ -13,7 +13,8 @@ tMY         myMODE;
 #define     MAX_STACK   50
 char    g_mode_stack    [MAX_STACK]; /* vi-like mode stack             */
 int     g_mode_depth;                /* depth of current mode stack    */
-char    g_mode_curr;                 /* current mode in stack          */
+char    g_mode_curr    = '-';        /* current mode in stack          */
+char    g_mode_exited  = '-';        /* last exited mode               */
 char    g_message       [LEN_RECD];
 char    g_last       = '-';
 char    g_text          [LEN_TERSE] = "··";
@@ -145,8 +146,9 @@ yMODE_init              (char a_mode)
       g_mode_stack [i] = '-';
    }
    /*---(clear controls)-----------------*/
-   g_mode_depth =  0;
-   g_mode_curr = '-';
+   g_mode_depth  =  0;
+   g_mode_curr   = '-';
+   g_mode_exited = '-';
    /*> strlcpy (myVIKEYS.mode_text, "--", LEN_TERSE);                                 <*/
    /*---(custom functions)---------------*/
    myMODE.e_format  = NULL;

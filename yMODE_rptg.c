@@ -48,6 +48,8 @@ yMODE_status            (char a_size, short a_wide, char a_list [LEN_FULL])
    /*---(current yVIEW mode)-------------*/
    sprintf (t, "  %-3.3s", g_text);
    strlcat (a_list, t, LEN_FULL);
+   sprintf (t, "  %c", g_mode_exited);
+   strlcat (a_list, t, LEN_FULL);
    /*---(name)---------------------------*/
    n  = ymode_by_abbr (yMODE_curr ());
    sprintf (t, "  %-8.8s", g_modes [n].terse);

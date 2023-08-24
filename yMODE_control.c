@@ -71,6 +71,9 @@ ymode__enter            (char a_force, char a_mode)
    char      (*x_prepper) (void)       = NULL;
    /*---(header)-------------------------*/
    DEBUG_YMODE   yLOG_enter   (__FUNCTION__);
+   /*---(defaulting)---------------------*/
+   /*> g_mode_exited = '-';                                                           <*/
+   /*> DEBUG_YMODE   yLOG_char    ("exited"    , g_mode_exited);                      <*/
    /*---(check for dup)------------------*/
    if (g_mode_stack [g_mode_depth] == a_mode)  return 1;
    /*---(validate mode)------------------*/
@@ -160,11 +163,13 @@ yMODE_exit              (void)
    }
    DEBUG_YMODE   yLOG_complex ("before"    , "%2d %s", g_mode_depth, g_mode_stack);
    --g_mode_depth;
+   g_mode_exited = g_mode_stack [g_mode_depth];
+   DEBUG_YMODE   yLOG_char    ("exited"    , g_mode_exited);
    g_mode_stack [g_mode_depth] = x_mode;
    DEBUG_YMODE   yLOG_complex ("after"     , "%2d %s", g_mode_depth, g_mode_stack);
    x_mode = g_mode_stack [g_mode_depth - 1];
    /*---(set global mode)----------------*/
-   g_mode_curr = x_mode;
+   g_mode_curr   = x_mode;
    DEBUG_YMODE   yLOG_char    ("mode_curr" , g_mode_curr);
    ymode_update ();
    /*---(complete)-----------------------*/
@@ -201,6 +206,12 @@ yMODE_not               (char a_mode)
 {
    if (a_mode != g_mode_stack [g_mode_depth - 1]) return -1;
    return 0;
+}
+
+char
+yMODE_exited            (void)
+{
+   return g_mode_exited;
 }
 
 

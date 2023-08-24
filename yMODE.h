@@ -77,6 +77,7 @@ char        yMODE_exit              (void);
 char        yMODE_curr              (void);
 char        yMODE_prev              (void);
 char        yMODE_not               (char a_mode);
+char        yMODE_exited            (void);
 /*---(allow)----------------*/
 char        yMODE_get_allow         (char a_abbr, char *a_allow);
 char        yMODE_set_allow         (char a_abbr, char *a_allow);
