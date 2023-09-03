@@ -18,7 +18,7 @@ char   s_modechanges  [MAX_MODES][LEN_TERSE] = {
    { MODE_PROGRESS , PMOD_REPEAT   , MODE_COMMAND  , SMOD_MENUS    , 0             , 0             , 0             , 0             , 0             , 0             , 0             },
    { MODE_OMNI     , PMOD_REPEAT   , 0             , 0             , 0             , 0             , 0             , 0             , 0             , 0             , 0             },
    /*---(source-related)-------------*/
-   { MODE_SOURCE   , PMOD_REPEAT   , UMOD_INPUT    , UMOD_REPLACE  , UMOD_SUNDO    , SMOD_SREG     , SMOD_MACRO    , UMOD_WANDER   , 0             , 0             , 0             },
+   { MODE_SOURCE   , PMOD_REPEAT   , UMOD_INPUT    , UMOD_REPLACE  , UMOD_SUNDO    , SMOD_SREG     , SMOD_MACRO    , UMOD_WANDER   , MODE_COMMAND  , 0             , 0             },
    { MODE_COMMAND  , PMOD_REPEAT   , UMOD_INPUT    , UMOD_REPLACE  , UMOD_SUNDO    , SMOD_SREG     , UMOD_HISTORY  , 0             , 0             , 0             , 0             },
    { MODE_SEARCH   , PMOD_REPEAT   , UMOD_INPUT    , UMOD_REPLACE  , UMOD_SUNDO    , SMOD_SREG     , UMOD_HISTORY  , 0             , 0             , 0             , 0             },
    { SMOD_HINT     , PMOD_REPEAT   , UMOD_INPUT    , UMOD_REPLACE  , UMOD_SUNDO    , 0             , 0             , 0             , 0             , 0             , 0             },
