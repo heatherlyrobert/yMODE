@@ -251,8 +251,8 @@ ymode__init_verify      (void)
    DEBUG_YMODE   yLOG_senter  (__FUNCTION__);
    /*---(check ready)--------------------*/
    n = g_last;
-   strlcpy (x_expect, g_modes [n].expect + S_FUNC, 5);
-   strlcpy (x_actual, g_actual [n] + S_FUNC, 5);
+   ystrlcpy (x_expect, g_modes [n].expect + S_FUNC, 5);
+   ystrlcpy (x_actual, g_actual [n] + S_FUNC, 5);
    if (strcmp (x_expect, x_actual) == 0) {
       g_actual [n] [S_INIT ] = 'i';
       DEBUG_YMODE   yLOG_snote   ("marked ready, COMPLETE");
@@ -275,8 +275,8 @@ ymode__conf_verify      (void)
    DEBUG_YMODE   yLOG_senter  (__FUNCTION__);
    /*---(check ready)--------------------*/
    n = g_last;
-   strlcpy (x_expect, g_modes [n].expect + S_CONF, 5);
-   strlcpy (x_actual, g_actual [n] + S_CONF, 5);
+   ystrlcpy (x_expect, g_modes [n].expect + S_CONF, 5);
+   ystrlcpy (x_actual, g_actual [n] + S_CONF, 5);
    if (strcmp (x_expect, x_actual) == 0) {
       g_actual [n] [S_READY] = 'r';
       DEBUG_YMODE   yLOG_snote   ("marked ready, COMPLETE");
@@ -341,8 +341,8 @@ ymode__updating         (char a_target)
          continue;
       }
       DEBUG_YMODE   yLOG_char    ("test"      , g_modes [n].abbr);
-      strlcpy (x_expect, g_modes [n].expect + x_loc, x_len);
-      strlcpy (x_actual, g_actual [n] + x_loc, x_len);
+      ystrlcpy (x_expect, g_modes [n].expect + x_loc, x_len);
+      ystrlcpy (x_actual, g_actual [n] + x_loc, x_len);
       if (strcmp (x_expect, x_actual) != 0) continue;
       g_actual [n] [x_mark] = a_target;
       ++c;
@@ -577,7 +577,7 @@ ymode_status_purge      (void)
    /*---(count status)-------------------*/
    for (i = 0; i < g_nmode; ++i) {
       DEBUG_YMODE   yLOG_schar   (g_modes [i].abbr);
-      strlcpy (g_actual [i], S_DEFAULT, LEN_DESC);
+      ystrlcpy (g_actual [i], S_DEFAULT, LEN_DESC);
       if (g_modes [i].expect [S_AFTER] == ' ')  g_actual [i] [S_AFTER] = ' ';
    }
    /*---(complete)-----------------------*/

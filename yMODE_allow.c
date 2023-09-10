@@ -90,15 +90,15 @@ ymode_allow__loader     (char a_abbr)
          DEBUG_YMODE   yLOG_char    ("d"         , d);
          if (d == 0)  break;
          /*---(save start)---------------*/
-         strlcpy (s, ""         , LEN_DESC);
+         ystrlcpy (s, ""         , LEN_DESC);
          if (g_allow [n] != NULL) {
-            strlcpy (s, g_allow [n], LEN_DESC);
+            ystrlcpy (s, g_allow [n], LEN_DESC);
             free (g_allow [n]);
             g_allow [n] = NULL;
          }
          /*---(save combined)------------*/
          sprintf (t, "%c", d);
-         strlcat (s          , t, LEN_DESC);
+         ystrlcat (s          , t, LEN_DESC);
          g_allow [n] = strdup (s);
          DEBUG_YMODE   yLOG_info    ("g_allow"   , g_allow [n]);
          /*---(done)---------------------*/
@@ -125,7 +125,7 @@ yMODE_get_allow         (char a_abbr, char *a_allow)
    --rce;  if (n < 0)            return rce;
    /*---(update)-------------------------*/
    if (g_allow [n] == NULL)  strcpy  (a_allow, "");
-   else                      strlcpy (a_allow, g_allow [n], LEN_DESC);
+   else                      ystrlcpy (a_allow, g_allow [n], LEN_DESC);
    /*---(complete)-----------------------*/
    return 0;
 }
@@ -186,7 +186,7 @@ yMODE_get_message       (char a_abbr, char *a_mesg)
    --rce;  if (n < 0)            return rce;
    /*---(update)-------------------------*/
    if (g_allow [n] == NULL)  strcpy  (a_mesg , "");
-   else                      strlcpy (a_mesg , g_mesg  [n], LEN_HUND);
+   else                      ystrlcpy (a_mesg , g_mesg  [n], LEN_HUND);
    /*---(complete)-----------------------*/
    return 0;
 }

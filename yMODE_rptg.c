@@ -43,26 +43,26 @@ yMODE_status            (char a_size, short a_wide, char a_list [LEN_FULL])
    sprintf (a_list, " modes (%d)", g_mode_depth);
    for (i = 0; i < 8; ++i) {
       sprintf (t, " %c", g_mode_stack [i]);
-      strlcat (a_list, t, LEN_FULL);
+      ystrlcat (a_list, t, LEN_FULL);
    }
    /*---(current yVIEW mode)-------------*/
    sprintf (t, "  %-3.3s", g_text);
-   strlcat (a_list, t, LEN_FULL);
+   ystrlcat (a_list, t, LEN_FULL);
    sprintf (t, "  %c", g_mode_exited);
-   strlcat (a_list, t, LEN_FULL);
+   ystrlcat (a_list, t, LEN_FULL);
    /*---(name)---------------------------*/
    n  = ymode_by_abbr (yMODE_curr ());
    sprintf (t, "  %-8.8s", g_modes [n].terse);
-   strlcat (a_list, t, LEN_FULL);
+   ystrlcat (a_list, t, LEN_FULL);
    /*---(allow)--------------------------*/
    if (g_allow [n] == NULL || strcmp (g_allow [n], "") == 0) {
       sprintf (t, "  allows none");
    } else {
       sprintf (t, "  allows å%sæ", g_allow [n]);
    }
-   strlcat (a_list, t, LEN_FULL);
+   ystrlcat (a_list, t, LEN_FULL);
    /*---(suffix)-------------------------*/
-   strlcat (a_list, " Ï", LEN_FULL);
+   ystrlcat (a_list, " Ï", LEN_FULL);
    /*---(complete)-----------------------*/
    return 0;
 }

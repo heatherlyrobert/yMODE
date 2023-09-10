@@ -62,8 +62,8 @@ static char  s_mode [LEN_RECD] = "";
 char
 yMODE_unit_reset        (void)
 {
-   strlcpy (s_keys, "", LEN_RECD);
-   strlcpy (s_mode, "", LEN_RECD);
+   ystrlcpy (s_keys, "", LEN_RECD);
+   ystrlcpy (s_mode, "", LEN_RECD);
    s_xpos = s_ypos = 0;
    return 0;
 }
@@ -73,9 +73,9 @@ ymode_unit__log         (uchar a_mode, uchar a_key)
 {
    char        t           [LEN_TERSE] = "";
    sprintf (t, "%c", a_mode);
-   strlcat (s_mode, t, LEN_RECD);
+   ystrlcat (s_mode, t, LEN_RECD);
    sprintf (t, "%c", chrvisible (a_key));
-   strlcat (s_keys, t, LEN_RECD);
+   ystrlcat (s_keys, t, LEN_RECD);
    return 0;
 }
 
@@ -174,7 +174,7 @@ static  char s_command [LEN_HUND] = "";
 char
 ymode_unit__prepare     (void)
 {
-   strlcpy (s_command, ":", LEN_HUND);
+   ystrlcpy (s_command, ":", LEN_HUND);
    return 0;
 }
 
@@ -196,7 +196,7 @@ ymode_unit__command      (uchar a_major, uchar a_minor)
       break;
    default   :
       sprintf (t, "%c", a_minor);
-      strlcat (s_command, t, LEN_HUND);
+      ystrlcat (s_command, t, LEN_HUND);
       break;
    }
    DEBUG_YMODE   yLOG_exit    (__FUNCTION__);

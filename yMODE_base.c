@@ -130,14 +130,14 @@ yMODE_init              (char a_mode)
    /*---(yVIHUB)-------------------------*/
    yVIHUB_from_yMODE (yMODE_yvihub_set);
    /*---(prepare)------------------------*/
-   strlcpy (g_majors, "", MAX_MODES);
+   ystrlcpy (g_majors, "", MAX_MODES);
    myMODE.h_major   = G_KEY_SPACE;
    /*---(identify majors)----------------*/
    for (i = 0; i < MAX_MODES; ++i) {
       g_mesg [i] = g_modes [i].mesg;
       if (g_modes  [i].type != MODE_MAJOR)    continue;
       sprintf (t, "%c", g_modes  [i].abbr);
-      strlcat (g_majors, t, MAX_MODES);
+      ystrlcat (g_majors, t, MAX_MODES);
    }
    /*---(load transitions)---------------*/
    ymode_allow_load ();
@@ -149,7 +149,7 @@ yMODE_init              (char a_mode)
    g_mode_depth  =  0;
    g_mode_curr   = '-';
    g_mode_exited = '-';
-   /*> strlcpy (myVIKEYS.mode_text, "--", LEN_TERSE);                                 <*/
+   /*> ystrlcpy (myVIKEYS.mode_text, "--", LEN_TERSE);                                 <*/
    /*---(custom functions)---------------*/
    myMODE.e_format  = NULL;
    myMODE.e_object  = NULL;
