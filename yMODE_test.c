@@ -74,7 +74,7 @@ ymode_unit__log         (uchar a_mode, uchar a_key)
    char        t           [LEN_TERSE] = "";
    sprintf (t, "%c", a_mode);
    ystrlcat (s_mode, t, LEN_RECD);
-   sprintf (t, "%c", chrvisible (a_key));
+   sprintf (t, "%c", ychrvisible (a_key));
    ystrlcat (s_keys, t, LEN_RECD);
    return 0;
 }

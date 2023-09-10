@@ -220,7 +220,7 @@ yMODE_handle            (uchar a_key)
       return 0;
    }
    DEBUG_LOOP   yLOG_note    ("REAL KEY");
-   x_minor = chrworking (a_key);
+   x_minor = ychrworking (a_key);
    DEBUG_LOOP   yLOG_char    ("x_minor"   , x_minor);
    /*> myVIKEYS.trouble   = '-';                                                      <*/
    /*---(handle count)-------------------*/
@@ -234,7 +234,7 @@ yMODE_handle            (uchar a_key)
    }
    /*---(handle grouping)----------------*/
    if (strchr ("()", x_minor) != NULL) {
-      DEBUG_LOOP   yLOG_complex ("grouping"  , "%c, %3d, %c", yMODE_curr (), x_minor, chrvisible (x_minor));
+      DEBUG_LOOP   yLOG_complex ("grouping"  , "%c, %3d, %c", yMODE_curr (), x_minor, ychrvisible (x_minor));
       rc = yVIHUB_yKEYS_group_hmode (myMODE.h_major, x_minor);
       DEBUG_LOOP   yLOG_value   ("group"     , rc);
       if (rc > 0) {
@@ -269,7 +269,7 @@ yMODE_handle            (uchar a_key)
       x_curr = yMODE_curr ();
       DEBUG_LOOP   yLOG_char    ("MODE curr" , x_curr);
       /*---(translate unprintable)-------*/
-      snprintf (x_keys,   9, "  %c%c", chrvisible (myMODE.h_major), chrvisible (x_minor));
+      snprintf (x_keys,   9, "  %c%c", ychrvisible (myMODE.h_major), ychrvisible (x_minor));
       /*---(handle returns)--------------*/
       if (rc <   0) {
          DEBUG_LOOP   yLOG_note    ("negative return, warning");
