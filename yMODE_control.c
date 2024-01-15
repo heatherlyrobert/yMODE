@@ -214,4 +214,23 @@ yMODE_exited            (void)
    return g_mode_exited;
 }
 
+char
+yMODE_using_command     (void)
+{
+   int         i           =    0;
+   for (i = 0; i < g_mode_depth; ++i) {
+      if (g_mode_stack [i] == MODE_COMMAND)  return 1;
+   }
+   return 0;
+}
+
+char
+yMODE_using_menus       (void)
+{
+   int         i           =    0;
+   for (i = 0; i < g_mode_depth; ++i) {
+      if (g_mode_stack [i] == SMOD_MENUS  )  return 1;
+   }
+   return 0;
+}
 

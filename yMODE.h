@@ -106,6 +106,8 @@ char        yMODE_unit_handlers     (void);
 char*       yMODE_unit              (char *a_question, int n);
 /*---(done)-----------------*/
 
+char        yMODE_usind_command     (void);
+char        yMODE_usind_menus       (void);
 
 
 char        yMODE_debug_status      (void);
